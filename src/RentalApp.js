@@ -1,4 +1,4 @@
-// RentalApp.js - Updated with modular search and filters
+// RentalApp.js - Main app with routing
 import React, { useState, useEffect } from 'react';
 import { Plus, Calendar, MapPin, User, DollarSign, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
 
@@ -7,13 +7,18 @@ import SearchBar from './components/SearchBar';
 import FilterSidebar from './components/FilterSidebar';
 import SortDropdown from './components/SortDropdown';
 import ResultsHeader from './components/ResultsHeader';
+import ListingDetailPage from './components/ListingDetailPage';
 import useSearchAndFilter from './hooks/useSearchAndFilter';
+import useRouter from './hooks/useRouter';
 
 const RentalApp = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
+
+  // Router hook for navigation
+  const { currentView, params, navigate, goBack } = useRouter();
 
   // Use the search and filter hook
   const {
@@ -58,10 +63,28 @@ const RentalApp = () => {
     }
   };
 
-  const handleCheckout = (listing) => {
-    alert(`Checkout initiated for "${listing.title}"!\n\nPickup Location: ${listing.location || "Not specified"}`);
+  const handleItemClick = (listingId) => {
+    navigate('detail', { listingId });
   };
 
+  const handleBooking = (listing, selectedDates) => {
+    alert(`Booking initiated for "${listing.title}"!\n\nDates: ${selectedDates.join(', ')}\nTotal: $${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}`);
+    // Here you would navigate to checkout or payment page
+  };
+
+  // Render detail page if viewing a specific listing
+  if (currentView === 'detail' && params.listingId) {
+    return (
+      <ListingDetailPage
+        listingId={params.listingId}
+        listings={listings}
+        onBack={goBack}
+        onBooking={handleBooking}
+      />
+    );
+  }
+
+  // Render main listings page
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">
       {/* Header */}
@@ -76,7 +99,7 @@ const RentalApp = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                    Rentals
+                    Luxe Rentals
                   </h1>
                   <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
                 </div>
@@ -198,14 +221,24 @@ const RentalApp = () => {
               {filteredListings.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {filteredListings.map((listing) => (
-                    <div key={listing.id} className="group cursor-pointer">
+                    <div 
+                      key={listing.id} 
+                      className="group cursor-pointer"
+                      onClick={() => handleItemClick(listing.id)}
+                    >
                       <div className="relative overflow-hidden rounded-2xl mb-4">
                         <img
                           src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
                           alt={listing.title}
                           className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
                         />
-                        <button className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            console.log('Toggle favorite');
+                          }}
+                          className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
                           <Heart className="w-4 h-4 text-slate-600" />
                         </button>
                         <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${getTypeColor(listing.category)}`}>
@@ -252,7 +285,10 @@ const RentalApp = () => {
                         </div>
 
                         <button
-                          onClick={() => handleCheckout(listing)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleItemClick(listing.id);
+                          }}
                           disabled={!listing.availability}
                           className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
                             listing.availability
@@ -260,7 +296,7 @@ const RentalApp = () => {
                               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           }`}
                         >
-                          {listing.availability ? 'Reserve Now' : 'Currently Unavailable'}
+                          {listing.availability ? 'View Details' : 'Currently Unavailable'}
                         </button>
                       </div>
                     </div>
@@ -334,7 +370,7 @@ const RentalApp = () => {
                   <Package className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold">Rentals</h4>
+                  <h4 className="text-xl font-bold">Luxe Rentals</h4>
                   <p className="text-sm text-slate-400">Own Less, Access More</p>
                 </div>
               </div>
@@ -366,7 +402,7 @@ const RentalApp = () => {
           
           <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              © 2025 Rentals. All rights reserved.
+              © 2025 Luxe Rentals. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <Globe className="w-5 h-5 text-slate-400" />
