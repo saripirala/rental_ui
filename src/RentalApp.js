@@ -68,7 +68,7 @@ const RentalApp = () => {
   };
 
   const handleBooking = (listing, selectedDates) => {
-    alert(`Booking initiated for "${listing.title}"!\n\nDates: ${selectedDates.join(', ')}\nTotal: $${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}`);
+    alert(`Booking initiated for "${listing.title}"!\n\nDates: ${selectedDates.join(', ')}\nTotal: ₹${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}`);
     // Here you would navigate to checkout or payment page
   };
 
@@ -99,7 +99,7 @@ const RentalApp = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                    Luxe Rentals
+                     Rentals
                   </h1>
                   <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
                 </div>
@@ -157,7 +157,7 @@ const RentalApp = () => {
           <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 h-full flex items-center">
             <div className="max-w-2xl">
               <h2 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Rent Luxury
+                Rent Anything
                 <span className="block bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
                   Fashion Pieces
                 </span>
@@ -324,7 +324,7 @@ const RentalApp = () => {
           <div className="flex justify-center py-32">
             <div className="text-center">
               <Loader2 className="animate-spin text-slate-400 mx-auto mb-4" size={48} />
-              <p className="text-slate-600 font-medium">Loading luxury items...</p>
+              <p className="text-slate-600 font-medium">Loading items...</p>
             </div>
           </div>
         )}
@@ -347,7 +347,7 @@ const RentalApp = () => {
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">No items available yet</h3>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                Be the first to share your luxury fashion pieces with the community
+                Be the first to share your rental experience with the community
               </p>
               <button
                 onClick={() => setShowAddForm(true)}
@@ -370,12 +370,12 @@ const RentalApp = () => {
                   <Package className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold">Luxe Rentals</h4>
+                  <h4 className="text-xl font-bold"> Rentals</h4>
                   <p className="text-sm text-slate-400">Own Less, Access More</p>
                 </div>
               </div>
               <p className="text-slate-300 leading-relaxed max-w-md">
-                Connecting minimalist living with maximum access. Rent luxury items from curated collections around the world.
+                Connecting minimalist living with maximum access. Rent items from curated collections around the world.
               </p>
             </div>
             
@@ -383,7 +383,7 @@ const RentalApp = () => {
               <h5 className="font-semibold mb-4">Explore</h5>
               <ul className="space-y-3 text-slate-300">
                 <li><a href="#" className="hover:text-white transition-colors">Designer Dresses</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Luxury Bags</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Bags</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Fine Jewelry</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Vintage Pieces</a></li>
               </ul>
@@ -402,7 +402,7 @@ const RentalApp = () => {
           
           <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              © 2025 Luxe Rentals. All rights reserved.
+              © 2025  Rentals. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <Globe className="w-5 h-5 text-slate-400" />

@@ -1,6 +1,6 @@
 // components/RelatedItems.js
 import React from 'react';
-import { Star, DollarSign } from 'lucide-react';
+import { Star, IndianRupee } from 'lucide-react';
 
 const RelatedItems = ({ relatedItems = [], onItemClick, currentItemId }) => {
   // Filter out current item and limit to 4 items
@@ -44,7 +44,7 @@ const RelatedItems = ({ relatedItems = [], onItemClick, currentItemId }) => {
                 </div>
                 
                 <div className="flex items-center">
-                  <DollarSign className="w-3 h-3 text-slate-900" />
+                  <IndianRupee className="w-3 h-3 text-slate-900" />
                   <span className="text-sm font-bold text-slate-900">{item.price_per_day}</span>
                   <span className="text-xs text-slate-500 ml-1">/day</span>
                 </div>
