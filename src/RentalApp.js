@@ -1,5 +1,13 @@
+// RentalApp.js - Updated with modular search and filters
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, MapPin, User, DollarSign, Package, Loader2, Search, Menu, Heart, Star, Globe } from 'lucide-react';
+import { Plus, Calendar, MapPin, User, DollarSign, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
+
+// Import your new components
+import SearchBar from './components/SearchBar';
+import FilterSidebar from './components/FilterSidebar';
+import SortDropdown from './components/SortDropdown';
+import ResultsHeader from './components/ResultsHeader';
+import useSearchAndFilter from './hooks/useSearchAndFilter';
 
 const RentalApp = () => {
   const [listings, setListings] = useState([]);
@@ -7,14 +15,27 @@ const RentalApp = () => {
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
+  // Use the search and filter hook
+  const {
+    searchTerm,
+    setSearchTerm,
+    sortBy,
+    setSortBy,
+    filters,
+    handleFilterChange,
+    clearFilters,
+    showFilters,
+    setShowFilters,
+    filteredListings,
+    resultCount
+  } = useSearchAndFilter(listings);
+
   useEffect(() => {
     const fetchListings = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/costumes");
         if (!res.ok) throw new Error("Failed to fetch listings");
         const json = await res.json();
-
-        // your API wraps in { data: [], pagination: {} }
         setListings(json.data || []);
       } catch (err) {
         console.error("Error fetching:", err);
@@ -55,20 +76,19 @@ const RentalApp = () => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                     Rentals
+                    Rentals
                   </h1>
-                  <p className="text-xs text-slate-500 font-medium">High Fashion • Premium Items</p>
+                  <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
                 </div>
               </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="hidden md:flex items-center bg-white border border-slate-200 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300 px-6 py-3 max-w-md mx-8 flex-1">
-              <Search className="w-5 h-5 text-slate-400 mr-3" />
-              <input
-                type="text"
-                placeholder="Search designer pieces..."
-                className="flex-1 outline-none text-slate-700 placeholder-slate-400"
+            {/* Search Bar - Desktop */}
+            <div className="hidden md:flex items-center mx-8 flex-1">
+              <SearchBar 
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+                onClear={() => setSearchTerm('')}
               />
             </div>
 
@@ -89,6 +109,15 @@ const RentalApp = () => {
               </div>
             </div>
           </div>
+
+          {/* Mobile Search Bar */}
+          <div className="md:hidden pb-4">
+            <SearchBar 
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              onClear={() => setSearchTerm('')}
+            />
+          </div>
         </div>
       </header>
 
@@ -105,7 +134,7 @@ const RentalApp = () => {
           <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 h-full flex items-center">
             <div className="max-w-2xl">
               <h2 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Rent 
+                Rent Luxury
                 <span className="block bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
                   Fashion Pieces
                 </span>
@@ -127,12 +156,139 @@ const RentalApp = () => {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+        {!loading && !error && listings.length > 0 && (
+          <div className="lg:flex lg:space-x-8">
+            {/* Filter Sidebar */}
+            <div className="lg:w-72 mb-8 lg:mb-0">
+              <FilterSidebar
+                filters={filters}
+                onFilterChange={handleFilterChange}
+                onClearFilters={clearFilters}
+                isOpen={showFilters}
+                onToggle={() => setShowFilters(!showFilters)}
+              />
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1">
+              {/* Search Controls Bar - Mobile */}
+              <div className="lg:hidden flex items-center justify-between mb-6">
+                <FilterSidebar
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={clearFilters}
+                  isOpen={showFilters}
+                  onToggle={() => setShowFilters(!showFilters)}
+                />
+                <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
+              </div>
+
+              {/* Results Header */}
+              <ResultsHeader
+                resultCount={resultCount}
+                totalCount={listings.length}
+                searchTerm={searchTerm}
+                filters={filters}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                SortDropdown={SortDropdown}
+              />
+
+              {/* Results Grid */}
+              {filteredListings.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {filteredListings.map((listing) => (
+                    <div key={listing.id} className="group cursor-pointer">
+                      <div className="relative overflow-hidden rounded-2xl mb-4">
+                        <img
+                          src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
+                          alt={listing.title}
+                          className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <button className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Heart className="w-4 h-4 text-slate-600" />
+                        </button>
+                        <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${getTypeColor(listing.category)}`}>
+                          {listing.category}
+                        </div>
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <div className="flex items-start justify-between">
+                          <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
+                            {listing.title}
+                          </h4>
+                          <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
+                            <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
+                            <span className="text-sm text-slate-600 font-medium">4.9</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-slate-500">
+                          <User className="w-4 h-4 mr-1" />
+                          <span>{listing.users?.full_name || "Premium Host"}</span>
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-slate-500">
+                          <MapPin className="w-4 h-4 mr-1" />
+                          <span>{listing.location || "Location available"}</span>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2">
+                          <div className="flex items-center">
+                            <DollarSign className="w-4 h-4 text-slate-900" />
+                            <span className="font-bold text-slate-900">{listing.price_per_day}</span>
+                            <span className="text-slate-500 text-sm ml-1">/ day</span>
+                          </div>
+                          
+                          <div className="flex items-center">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {listing.availability ? (
+                              <span className="text-emerald-600 font-medium text-sm">Available</span>
+                            ) : (
+                              <span className="text-amber-600 font-medium text-sm">Booked</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleCheckout(listing)}
+                          disabled={!listing.availability}
+                          className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
+                            listing.availability
+                              ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                          }`}
+                        >
+                          {listing.availability ? 'Reserve Now' : 'Currently Unavailable'}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20">
+                  <Package size={48} className="mx-auto text-slate-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-slate-900 mb-2">No items match your search</h3>
+                  <p className="text-slate-500 mb-6">Try adjusting your filters or search terms</p>
+                  <button
+                    onClick={clearFilters}
+                    className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                  >
+                    Clear Filters
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Loading State */}
         {loading && (
           <div className="flex justify-center py-32">
             <div className="text-center">
               <Loader2 className="animate-spin text-slate-400 mx-auto mb-4" size={48} />
-              <p className="text-slate-600 font-medium">Loading  items...</p>
+              <p className="text-slate-600 font-medium">Loading luxury items...</p>
             </div>
           </div>
         )}
@@ -146,92 +302,6 @@ const RentalApp = () => {
           </div>
         )}
 
-        {/* Listings Grid */}
-        {!loading && !error && listings.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h3 className="text-3xl font-bold text-slate-900 mb-2">Featured Items</h3>
-                <p className="text-slate-600">Curated collection of premium rental pieces</p>
-              </div>
-              <div className="text-sm text-slate-500">
-                {listings.length} {listings.length === 1 ? 'item' : 'items'}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {listings.map((listing) => (
-                <div key={listing.id} className="group cursor-pointer">
-                  <div className="relative overflow-hidden rounded-2xl mb-4">
-                    <img
-                      src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
-                      alt={listing.title}
-                      className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <button className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity">
-                      <Heart className="w-4 h-4 text-slate-600" />
-                    </button>
-                    <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${getTypeColor(listing.category)}`}>
-                      {listing.category}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between">
-                      <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
-                        {listing.title}
-                      </h4>
-                      <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
-                        <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
-                        <span className="text-sm text-slate-600 font-medium">4.9</span>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center text-sm text-slate-500">
-                      <User className="w-4 h-4 mr-1" />
-                      <span>{listing.users?.full_name || "Premium Host"}</span>
-                    </div>
-                    
-                    <div className="flex items-center text-sm text-slate-500">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      <span>{listing.location || "Location available"}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2">
-                      <div className="flex items-center">
-                        <DollarSign className="w-4 h-4 text-slate-900" />
-                        <span className="font-bold text-slate-900">{listing.price_per_day}</span>
-                        <span className="text-slate-500 text-sm ml-1">/ day</span>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        <Calendar className="w-4 h-4 mr-1" />
-                        {listing.availability ? (
-                          <span className="text-emerald-600 font-medium text-sm">Available</span>
-                        ) : (
-                          <span className="text-amber-600 font-medium text-sm">Booked</span>
-                        )}
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={() => handleCheckout(listing)}
-                      disabled={!listing.availability}
-                      className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
-                        listing.availability
-                          ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {listing.availability ? 'Reserve Now' : 'Currently Unavailable'}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* Empty State */}
         {!loading && !error && listings.length === 0 && (
           <div className="text-center py-32">
@@ -241,7 +311,7 @@ const RentalApp = () => {
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">No items available yet</h3>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                Be the first to share your  fashion pieces with the community
+                Be the first to share your luxury fashion pieces with the community
               </p>
               <button
                 onClick={() => setShowAddForm(true)}
@@ -264,12 +334,12 @@ const RentalApp = () => {
                   <Package className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold"> Rentals</h4>
-                  <p className="text-sm text-slate-400">Fashion . Accessories</p>
+                  <h4 className="text-xl font-bold">Rentals</h4>
+                  <p className="text-sm text-slate-400">Own Less, Access More</p>
                 </div>
               </div>
               <p className="text-slate-300 leading-relaxed max-w-md">
-                Connecting fashion lovers with like minded. Rent  items from friends and family.
+                Connecting minimalist living with maximum access. Rent luxury items from curated collections around the world.
               </p>
             </div>
             
@@ -277,7 +347,7 @@ const RentalApp = () => {
               <h5 className="font-semibold mb-4">Explore</h5>
               <ul className="space-y-3 text-slate-300">
                 <li><a href="#" className="hover:text-white transition-colors">Designer Dresses</a></li>
-                <li><a href="#" className="hover:text-white transition-colors"> Bags</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Luxury Bags</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Fine Jewelry</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Vintage Pieces</a></li>
               </ul>
@@ -296,7 +366,7 @@ const RentalApp = () => {
           
           <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p className="text-slate-400 text-sm">
-              © 2025  Rentals. All rights reserved.
+              © 2025 Rentals. All rights reserved.
             </p>
             <div className="flex items-center space-x-6 mt-4 md:mt-0">
               <Globe className="w-5 h-5 text-slate-400" />
