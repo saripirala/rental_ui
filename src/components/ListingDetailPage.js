@@ -1,6 +1,6 @@
 // components/ListingDetailPage.js
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, DollarSign, Star } from 'lucide-react'; // Add Star here
+import { ArrowLeft, Calendar, IndianRupee, Star } from 'lucide-react'; // Add Star here
 import ImageGallery from './ImageGallery';
 import ItemDetails from './ItemDetails';
 import OwnerProfile from './OwnerProfile';
