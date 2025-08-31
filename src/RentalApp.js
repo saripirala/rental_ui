@@ -1,6 +1,6 @@
 // RentalApp.js - Main app with routing
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, MapPin, User, DollarSign, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
+import { Plus, Calendar, MapPin, User, IndianRupee, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
 
 // Import your new components
 import SearchBar from './components/SearchBar';
@@ -269,7 +269,7 @@ const RentalApp = () => {
 
                         <div className="flex items-center justify-between pt-2">
                           <div className="flex items-center">
-                            <DollarSign className="w-4 h-4 text-slate-900" />
+                            <IndianRupee className="w-4 h-4 text-slate-900" />
                             <span className="font-bold text-slate-900">{listing.price_per_day}</span>
                             <span className="text-slate-500 text-sm ml-1">/ day</span>
                           </div>
