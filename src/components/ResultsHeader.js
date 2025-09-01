@@ -4,7 +4,7 @@ import React from 'react';
 const ResultsHeader = ({ resultCount, totalCount, searchTerm, filters, sortBy, onSortChange, SortDropdown }) => {
   const hasActiveFilters = filters.category !== 'All' || 
                           filters.minPrice > 0 || 
-                          filters.maxPrice < 1000 || 
+                          filters.maxPrice < 100000 || 
                           filters.location.trim() !== '' ||
                           searchTerm.trim() !== '';
 

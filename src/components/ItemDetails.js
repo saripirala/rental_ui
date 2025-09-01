@@ -47,7 +47,7 @@ const ItemDetails = ({ listing, onToggleFavorite, onShare }) => {
 
       {/* Price */}
       <div className="flex items-baseline space-x-2">
-        <span className="text-3xl font-bold text-slate-900">${listing.price_per_day}</span>
+        <span className="text-3xl font-bold text-slate-900">₹{listing.price_per_day}</span>
         <span className="text-slate-500">per day</span>
       </div>
 

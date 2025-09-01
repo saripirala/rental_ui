@@ -11,7 +11,7 @@ const FilterSidebar = ({
 }) => {
   const hasActiveFilters = filters.category !== 'All' || 
                           filters.minPrice > 0 || 
-                          filters.maxPrice < 1000 || 
+                          filters.maxPrice < 100000 || 
                           filters.location.trim() !== '';
 
   return (
@@ -76,7 +76,7 @@ const FilterSidebar = ({
             {/* Price Range */}
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-3">
-                Price Range (${filters.minPrice} - ${filters.maxPrice})
+                Price Range (₹{filters.minPrice} - ₹{filters.maxPrice})
               </label>
               <div className="space-y-4">
                 <div>

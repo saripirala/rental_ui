@@ -126,7 +126,7 @@ const ListingDetailPage = ({ listingId, listings, onBack, onBooking }) => {
             <div className="bg-white rounded-2xl border border-slate-200 p-6 sticky top-24">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold text-slate-900">${listing.price_per_day}</span>
+                  <span className="text-2xl font-bold text-slate-900">₹{listing.price_per_day}</span>
                   <span className="text-slate-500">per day</span>
                 </div>
                 <div className="flex items-center space-x-1">

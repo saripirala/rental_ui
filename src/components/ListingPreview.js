@@ -1,6 +1,6 @@
 // components/ListingPreview.js
 import React from 'react';
-import { Star, DollarSign, MapPin, User, Calendar, Package, Edit } from 'lucide-react';
+import { Star, IndianRupee, MapPin, User, Calendar, Package, Edit } from 'lucide-react';
 
 const ListingPreview = ({ formData, images, onEdit, onSubmit, onCancel }) => {
   const getTypeColor = (type) => {
@@ -84,7 +84,7 @@ const ListingPreview = ({ formData, images, onEdit, onSubmit, onCancel }) => {
 
             <div className="flex items-baseline space-x-2">
               <span className="text-3xl font-bold text-slate-900">
-                ${formData.price_per_day || '0.00'}
+              ₹{formData.price_per_day || '0.00'}
               </span>
               <span className="text-slate-500">per day</span>
             </div>
@@ -127,18 +127,18 @@ const ListingPreview = ({ formData, images, onEdit, onSubmit, onCancel }) => {
               <h4 className="font-semibold text-slate-900 mb-4">Pricing</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-600">${formData.price_per_day || '0.00'} × 3 days</span>
-                  <span className="text-slate-900">${((parseFloat(formData.price_per_day) || 0) * 3).toFixed(2)}</span>
+                  <span className="text-slate-600">₹{formData.price_per_day || '0.00'} × 3 days</span>
+                  <span className="text-slate-900">₹{((parseFloat(formData.price_per_day) || 0) * 3).toFixed(2)}</span>
                 </div>
                 {formData.cleaning_fee && (
                   <div className="flex justify-between">
                     <span className="text-slate-600">Cleaning fee</span>
-                    <span className="text-slate-900">${formData.cleaning_fee}</span>
+                    <span className="text-slate-900">₹{formData.cleaning_fee}</span>
                   </div>
                 )}
                 <div className="flex justify-between pt-2 border-t border-slate-200 font-semibold">
                   <span className="text-slate-900">Total</span>
-                  <span className="text-slate-900">${totalPrice.toFixed(2)}</span>
+                  <span className="text-slate-900">₹{totalPrice.toFixed(2)}</span>
                 </div>
               </div>
             </div>

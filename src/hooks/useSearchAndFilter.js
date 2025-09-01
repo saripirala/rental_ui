@@ -7,7 +7,7 @@ const useSearchAndFilter = (listings) => {
   const [filters, setFilters] = useState({
     category: 'All',
     minPrice: 0,
-    maxPrice: 1000,
+    maxPrice: 100000,
     location: ''
   });
 
@@ -19,7 +19,7 @@ const useSearchAndFilter = (listings) => {
     setFilters({
       category: 'All',
       minPrice: 0,
-      maxPrice: 1000,
+      maxPrice: 100000,
       location: ''
     });
     setSearchTerm('');

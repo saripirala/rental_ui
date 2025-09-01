@@ -1,6 +1,6 @@
 // components/ListingForm.js
 import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, Package, DollarSign, MapPin, FileText } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Package, IndianRupee, MapPin, FileText } from 'lucide-react';
 
 const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -48,7 +48,7 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
 
   const steps = [
     { number: 1, title: 'Basic Info', icon: Package },
-    { number: 2, title: 'Pricing', icon: DollarSign },
+    { number: 2, title: 'Pricing', icon: IndianRupee },
     { number: 3, title: 'Location', icon: MapPin },
     { number: 4, title: 'Details', icon: FileText }
   ];
@@ -235,7 +235,7 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
                 Daily Rental Price *
               </label>
               <div className="relative">
-                <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <IndianRupee className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <input
                   type="number"
                   value={formData.price_per_day}
@@ -260,7 +260,7 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
                   Cleaning Fee
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <IndianRupee className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="number"
                     value={formData.cleaning_fee}
@@ -279,7 +279,7 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
                   Security Deposit
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <IndianRupee className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400" />
                   <input
                     type="number"
                     value={formData.security_deposit}
@@ -300,24 +300,24 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-slate-600">Daily rate</span>
-                  <span className="font-medium">${formData.price_per_day || '0.00'}</span>
+                  <span className="font-medium">₹{formData.price_per_day || '0.00'}</span>
                 </div>
                 {formData.cleaning_fee && (
                   <div className="flex justify-between">
                     <span className="text-slate-600">Cleaning fee</span>
-                    <span className="font-medium">${formData.cleaning_fee}</span>
+                    <span className="font-medium">₹{formData.cleaning_fee}</span>
                   </div>
                 )}
                 {formData.security_deposit && (
                   <div className="flex justify-between">
                     <span className="text-slate-600">Security deposit</span>
-                    <span className="font-medium">${formData.security_deposit} (refundable)</span>
+                    <span className="font-medium">₹{formData.security_deposit} (refundable)</span>
                   </div>
                 )}
                 <div className="border-t border-slate-200 pt-2 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span>Total for 3 days</span>
-                    <span>${((parseFloat(formData.price_per_day) || 0) * 3 + (parseFloat(formData.cleaning_fee) || 0)).toFixed(2)}</span>
+                    <span>₹{((parseFloat(formData.price_per_day) || 0) * 3 + (parseFloat(formData.cleaning_fee) || 0)).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
