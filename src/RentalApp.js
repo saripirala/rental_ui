@@ -1,24 +1,36 @@
-// RentalApp.js - Main app with routing
+// RentalApp.js - Fixed version
 import React, { useState, useEffect } from 'react';
-import { Plus, Calendar, MapPin, User, IndianRupee, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
+import { 
+  Plus, Calendar, MapPin, User, Package, Loader2, Menu, 
+  Heart, Star, Globe, IndianRupee  // Added IndianRupee import
+} from 'lucide-react';
 
-// Import your new components
+// Import your existing components
 import SearchBar from './components/SearchBar';
 import FilterSidebar from './components/FilterSidebar';
 import SortDropdown from './components/SortDropdown';
 import ResultsHeader from './components/ResultsHeader';
 import ListingDetailPage from './components/ListingDetailPage';
+
+// Import new add listing components
+import AddListingFlow from './components/AddListingFlow';
+
+// Import hooks
 import useSearchAndFilter from './hooks/useSearchAndFilter';
 import useRouter from './hooks/useRouter';
+import useListingSubmission from './hooks/useListingSubmission';
 
 const RentalApp = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  // Removed showAddForm state as it's not needed with router
 
   // Router hook for navigation
   const { currentView, params, navigate, goBack } = useRouter();
+
+  // Listing submission hook
+  const { submitListing, submissions, isSubmitting } = useListingSubmission();
 
   // Use the search and filter hook
   const {
@@ -67,10 +79,34 @@ const RentalApp = () => {
     navigate('detail', { listingId });
   };
 
+  const handleListingSubmission = async (listingData) => {
+    try {
+      const result = await submitListing(listingData);
+      console.log('Listing submitted successfully:', result);
+      
+      // Refresh listings to include new submission (if approved immediately)
+      // In real app, you might want to add to pending submissions
+      return result;
+    } catch (error) {
+      console.error('Failed to submit listing:', error);
+      throw error;
+    }
+  };
+
   const handleBooking = (listing, selectedDates) => {
     alert(`Booking initiated for "${listing.title}"!\n\nDates: ${selectedDates.join(', ')}\nTotal: ₹${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}`);
     // Here you would navigate to checkout or payment page
   };
+
+  // Render add listing flow
+  if (currentView === 'add-listing') {
+    return (
+      <AddListingFlow
+        onClose={goBack}
+        onSubmit={handleListingSubmission}
+      />
+    );
+  }
 
   // Render detail page if viewing a specific listing
   if (currentView === 'detail' && params.listingId) {
@@ -122,7 +158,7 @@ const RentalApp = () => {
                 <span className="text-sm font-medium">EN</span>
               </button>
               <button 
-                onClick={() => setShowAddForm(true)}
+                onClick={() => navigate('add-listing')}  // Fixed navigation
                 className="hidden md:flex items-center px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors text-sm font-medium"
               >
                 List your items
@@ -166,7 +202,7 @@ const RentalApp = () => {
                 Discover exclusive designer items, vintage treasures, and premium accessories from curated collections
               </p>
               <button
-                onClick={() => setShowAddForm(true)}
+                onClick={() => navigate('add-listing')}  // Fixed navigation
                 className="bg-white text-slate-900 px-8 py-4 rounded-full font-semibold hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
               >
                 <Plus size={20} />
@@ -350,7 +386,7 @@ const RentalApp = () => {
                 Be the first to share your rental experience with the community
               </p>
               <button
-                onClick={() => setShowAddForm(true)}
+                onClick={() => navigate('add-listing')}  // Fixed navigation
                 className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
                 List Your First Item
