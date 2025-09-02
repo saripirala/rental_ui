@@ -1,38 +1,33 @@
-// RentalApp.js - Fixed version
+// RentalApp.js - Updated with Booking Flow Integration
 import React, { useState, useEffect } from 'react';
-import { 
-  Plus, Calendar, MapPin, User, Package, Loader2, Menu, 
-  Heart, Star, Globe, IndianRupee  // Added IndianRupee import
-} from 'lucide-react';
+import { Plus, Calendar, MapPin, User, IndianRupee, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
 
-// Import your existing components
+// Import existing components
 import SearchBar from './components/SearchBar';
 import FilterSidebar from './components/FilterSidebar';
 import SortDropdown from './components/SortDropdown';
 import ResultsHeader from './components/ResultsHeader';
 import ListingDetailPage from './components/ListingDetailPage';
-
-// Import new add listing components
 import AddListingFlow from './components/AddListingFlow';
+
+// Import new booking components
+import BookingFlow from './components/BookingFlow';
 
 // Import hooks
 import useSearchAndFilter from './hooks/useSearchAndFilter';
 import useRouter from './hooks/useRouter';
 import useListingSubmission from './hooks/useListingSubmission';
+import useBookingManagement from './hooks/useBookingManagement';
 
 const RentalApp = () => {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Removed showAddForm state as it's not needed with router
 
   // Router hook for navigation
   const { currentView, params, navigate, goBack } = useRouter();
 
-  // Listing submission hook
-  const { submitListing, submissions, isSubmitting } = useListingSubmission();
-
-  // Use the search and filter hook
+  // Search and filter hook
   const {
     searchTerm,
     setSearchTerm,
@@ -47,10 +42,16 @@ const RentalApp = () => {
     resultCount
   } = useSearchAndFilter(listings);
 
+  // Listing submission hook
+  const { submitListing } = useListingSubmission();
+
+  // Booking management hook
+  const { createBooking, getBookingConflicts, isBooking } = useBookingManagement();
+
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await fetch("https://rental-sharing.onrender.com/api/costumes");
+        const res = await fetch("http://localhost:5000/api/costumes");
         if (!res.ok) throw new Error("Failed to fetch listings");
         const json = await res.json();
         setListings(json.data || []);
@@ -79,13 +80,18 @@ const RentalApp = () => {
     navigate('detail', { listingId });
   };
 
+  const handleAddListing = () => {
+    navigate('add-listing');
+  };
+
+  const handleStartBooking = (listing) => {
+    navigate('booking', { listingId: listing.id });
+  };
+
   const handleListingSubmission = async (listingData) => {
     try {
       const result = await submitListing(listingData);
       console.log('Listing submitted successfully:', result);
-      
-      // Refresh listings to include new submission (if approved immediately)
-      // In real app, you might want to add to pending submissions
       return result;
     } catch (error) {
       console.error('Failed to submit listing:', error);
@@ -93,10 +99,60 @@ const RentalApp = () => {
     }
   };
 
-  const handleBooking = (listing, selectedDates) => {
-    alert(`Booking initiated for "${listing.title}"!\n\nDates: ${selectedDates.join(', ')}\nTotal: ₹${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}`);
-    // Here you would navigate to checkout or payment page
+  const handleBookingComplete = async (bookingResult) => {
+    console.log('Booking completed:', bookingResult);
+    // Optionally refresh listings or update UI state
   };
+
+  // Enhanced booking handler for detail page
+//  const handleBooking = (listing, selectedDates) => {
+//    // Check for conflicts first
+//    const conflicts = getBookingConflicts(listing.id, selectedDates[0], selectedDates[selectedDates.length - 1]);
+//    
+//    if (conflicts.length > 0) {
+//      alert('Selected dates conflict with existing bookings. Please choose different dates.');
+//      return;
+//    }
+//
+//    // Navigate to booking flow
+//    navigate('booking', { listingId: listing.id });
+//  };
+
+  // Get current listing for booking flow
+  const getCurrentListing = () => {
+    if (currentView === 'booking' && params.listingId) {
+      return listings.find(listing => listing.id === params.listingId);
+    }
+    return null;
+  };
+
+  // Render booking flow
+  if (currentView === 'booking') {
+    const listing = getCurrentListing();
+    if (!listing) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-slate-900 mb-2">Listing not found</h2>
+            <button
+              onClick={goBack}
+              className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            >
+              Back to Listings
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <BookingFlow
+        listing={listing}
+        onClose={goBack}
+        onBookingComplete={handleBookingComplete}
+      />
+    );
+  }
 
   // Render add listing flow
   if (currentView === 'add-listing') {
@@ -108,14 +164,15 @@ const RentalApp = () => {
     );
   }
 
-  // Render detail page if viewing a specific listing
+  // Render detail page with enhanced booking
   if (currentView === 'detail' && params.listingId) {
     return (
       <ListingDetailPage
         listingId={params.listingId}
         listings={listings}
         onBack={goBack}
-        onBooking={handleBooking}
+        //onBooking={handleBooking}
+        onStartBooking={handleStartBooking}
       />
     );
   }
@@ -158,7 +215,7 @@ const RentalApp = () => {
                 <span className="text-sm font-medium">EN</span>
               </button>
               <button 
-                onClick={() => navigate('add-listing')}  // Fixed navigation
+                onClick={handleAddListing}
                 className="hidden md:flex items-center px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors text-sm font-medium"
               >
                 List your items
@@ -193,7 +250,7 @@ const RentalApp = () => {
           <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 h-full flex items-center">
             <div className="max-w-2xl">
               <h2 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Rent Anything
+                Rent Items
                 <span className="block bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
                   Fashion Pieces
                 </span>
@@ -202,7 +259,7 @@ const RentalApp = () => {
                 Discover exclusive designer items, vintage treasures, and premium accessories from curated collections
               </p>
               <button
-                onClick={() => navigate('add-listing')}  // Fixed navigation
+                onClick={handleAddListing}
                 className="bg-white text-slate-900 px-8 py-4 rounded-full font-semibold hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
               >
                 <Plus size={20} />
@@ -323,7 +380,9 @@ const RentalApp = () => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleItemClick(listing.id);
+                            if (listing.availability) {
+                              handleStartBooking(listing);
+                            }
                           }}
                           disabled={!listing.availability}
                           className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
@@ -332,7 +391,7 @@ const RentalApp = () => {
                               : 'bg-slate-100 text-slate-400 cursor-not-allowed'
                           }`}
                         >
-                          {listing.availability ? 'View Details' : 'Currently Unavailable'}
+                          {listing.availability ? 'Book Now' : 'Currently Unavailable'}
                         </button>
                       </div>
                     </div>
@@ -383,10 +442,10 @@ const RentalApp = () => {
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-4">No items available yet</h3>
               <p className="text-slate-600 mb-8 leading-relaxed">
-                Be the first to share your rental experience with the community
+                Be the first to share your fashion pieces with the community
               </p>
               <button
-                onClick={() => navigate('add-listing')}  // Fixed navigation
+                onClick={handleAddListing}
                 className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
                 List Your First Item

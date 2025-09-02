@@ -1,16 +1,15 @@
-// components/ListingDetailPage.js
+// components/ListingDetailPage.js - Updated for Booking Flow
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Calendar, IndianRupee, Star } from 'lucide-react'; // Add Star here
+import { ArrowLeft, Calendar, IndianRupee } from 'lucide-react';
 import ImageGallery from './ImageGallery';
 import ItemDetails from './ItemDetails';
 import OwnerProfile from './OwnerProfile';
 import AvailabilityCalendar from './AvailabilityCalendar';
 import RelatedItems from './RelatedItems';
 
-const ListingDetailPage = ({ listingId, listings, onBack, onBooking }) => {
+const ListingDetailPage = ({ listingId, listings, onBack, onStartBooking }) => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedDates, setSelectedDates] = useState([]);
 
   useEffect(() => {
     // Simulate API call - replace with actual API call
@@ -22,7 +21,7 @@ const ListingDetailPage = ({ listingId, listings, onBack, onBooking }) => {
           setListing(found);
         } else {
           // In real app, make API call here
-          const res = await fetch(`https://rental-sharing.onrender.com/api/costumes/${listingId}`);
+          const res = await fetch(`http://localhost:5000/api/costumes/${listingId}`);
           if (res.ok) {
             const data = await res.json();
             setListing(data);
@@ -66,22 +65,9 @@ const ListingDetailPage = ({ listingId, listings, onBack, onBooking }) => {
     );
   }
 
-  const handleDateSelect = (dateStr) => {
-    setSelectedDates(prev => {
-      if (prev.includes(dateStr)) {
-        return prev.filter(d => d !== dateStr);
-      } else {
-        return [...prev, dateStr].sort();
-      }
-    });
-  };
-
+  // Updated booking handler - now navigates to booking flow
   const handleBooking = () => {
-    if (selectedDates.length === 0) {
-      alert("Please select your rental dates first.");
-      return;
-    }
-    onBooking && onBooking(listing, selectedDates);
+    onStartBooking && onStartBooking(listing);
   };
 
   const mockUnavailableDates = [
@@ -130,67 +116,35 @@ const ListingDetailPage = ({ listingId, listings, onBack, onBooking }) => {
                   <span className="text-slate-500">per day</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
-                  <span className="text-sm font-medium">4.9</span>
+                  <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                  <span className="text-sm font-medium text-slate-600">Available</span>
                 </div>
               </div>
 
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-900 mb-2">
-                    Select your dates
-                  </label>
-                  <div className="text-xs text-slate-500 mb-3">
-                    {selectedDates.length > 0 
-                      ? `${selectedDates.length} ${selectedDates.length === 1 ? 'day' : 'days'} selected`
-                      : 'Click dates to select your rental period'
-                    }
-                  </div>
-                </div>
-              </div>
+              {/* Quick Preview Calendar */}
+              <AvailabilityCalendar
+                unavailableDates={mockUnavailableDates}
+                onDateSelect={() => {}} // Disabled - for preview only
+                selectedDates={[]}
+              />
 
+              {/* Book Now Button */}
               <button
                 onClick={handleBooking}
-                disabled={!listing.availability || selectedDates.length === 0}
-                className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 ${
-                  listing.availability && selectedDates.length > 0
+                disabled={!listing.availability}
+                className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-200 mt-6 ${
+                  listing.availability
                     ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
               >
-                {!listing.availability 
-                  ? 'Currently Unavailable'
-                  : selectedDates.length === 0 
-                  ? 'Select Dates to Book'
-                  : `Reserve for ${selectedDates.length} ${selectedDates.length === 1 ? 'day' : 'days'}`
-                }
+                {listing.availability ? 'Reserve Now' : 'Currently Unavailable'}
               </button>
 
-              {/* Price Breakdown */}
-              {selectedDates.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-slate-100 space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-slate-600">${listing.price_per_day} × {selectedDates.length} days</span>
-                    <span className="text-slate-900">${(parseFloat(listing.price_per_day) * selectedDates.length).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-600">Service fee</span>
-                    <span className="text-slate-900">${(parseFloat(listing.price_per_day) * selectedDates.length * 0.1).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between pt-2 border-t border-slate-100 font-semibold">
-                    <span className="text-slate-900">Total</span>
-                    <span className="text-slate-900">${(parseFloat(listing.price_per_day) * selectedDates.length * 1.1).toFixed(2)}</span>
-                  </div>
-                </div>
-              )}
+              <p className="text-center text-slate-500 text-sm mt-3">
+                You won't be charged yet
+              </p>
             </div>
-
-            {/* Calendar */}
-            <AvailabilityCalendar
-              unavailableDates={mockUnavailableDates}
-              onDateSelect={handleDateSelect}
-              selectedDates={selectedDates}
-            />
 
             {/* Owner Profile */}
             <OwnerProfile 
