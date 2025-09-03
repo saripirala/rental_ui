@@ -265,7 +265,7 @@ const BookingFlow = ({ listing, onClose, onBookingComplete }) => {
                     ? 'Select dates to continue'
                     : error
                     ? 'Resolve date conflict first'
-                    : `Continue to Checkout • $${pricing.total.toFixed(2)}`
+                    : `Continue to Checkout • ₹${pricing.total.toFixed(2)}`
                   }
                 </button>
               </div>

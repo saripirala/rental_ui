@@ -236,7 +236,7 @@ const CheckoutForm = ({ onSubmit, onBack, startDate, endDate, pricing, isProcess
                 <span>Processing...</span>
               </div>
             ) : (
-              `Confirm Booking • $${pricing.total.toFixed(2)}`
+              `Confirm Booking •  ₹${pricing.total.toFixed(2)}`
             )}
           </button>
         </div>
