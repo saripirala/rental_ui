@@ -11,7 +11,7 @@ const useBookingManagement = () => {
     const loadBookings = async () => {
       try {
         // In real app, fetch user's bookings from API
-        const response = await fetch('http://localhost:5000/api/bookings');
+        const response = await fetch('https://rental-sharing.onrender.com/api/bookings');
         if (response.ok) {
           const data = await response.json();
           setBookings(data.bookings || []);
@@ -66,7 +66,7 @@ const useBookingManagement = () => {
       };
 
       // Make API call
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      const response = await fetch('https://rental-sharing.onrender.com/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ const useBookingManagement = () => {
    */
   const cancelBooking = async (bookingId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {
+      const response = await fetch(`https://rental-sharing.onrender.com/api/bookings/${bookingId}/cancel`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ const useBookingManagement = () => {
    */
   const updateBookingStatus = async (bookingId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/status`, {
+      const response = await fetch(`https://rental-sharing.onrender.com/api/bookings/${bookingId}/status`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

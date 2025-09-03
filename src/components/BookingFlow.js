@@ -146,7 +146,7 @@ const BookingFlow = ({ listing, onClose, onBookingComplete }) => {
       };
 
       // Simulate API call - replace with actual endpoint
-      const response = await fetch('http://localhost:5000/api/bookings', {
+      const response = await fetch('https://rental-sharing.onrender.com/api/bookings', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

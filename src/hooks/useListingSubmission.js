@@ -26,7 +26,7 @@ const useListingSubmission = () => {
       }
 
       // Simulate API call
-      const response = await fetch('http://localhost:5000/api/costumes', {
+      const response = await fetch('https://rental-sharing.onrender.com/api/costumes', {
         method: 'POST',
         body: formData,
       });

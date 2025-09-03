@@ -51,7 +51,7 @@ const RentalApp = () => {
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/costumes");
+        const res = await fetch("https://rental-sharing.onrender.com/api/costumes");
         if (!res.ok) throw new Error("Failed to fetch listings");
         const json = await res.json();
         setListings(json.data || []);

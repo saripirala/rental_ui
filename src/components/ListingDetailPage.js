@@ -21,7 +21,7 @@ const ListingDetailPage = ({ listingId, listings, onBack, onStartBooking }) => {
           setListing(found);
         } else {
           // In real app, make API call here
-          const res = await fetch(`http://localhost:5000/api/costumes/${listingId}`);
+          const res = await fetch(`https://rental-sharing.onrender.com/api/costumes/${listingId}`);
           if (res.ok) {
             const data = await res.json();
             setListing(data);
