@@ -1,5 +1,8 @@
 import React from 'react';
+import { useState } from "react";
 import { Filter, X, ChevronDown } from 'lucide-react';
+
+
 
 const FilterSidebar = ({ 
   filters, 
@@ -13,6 +16,8 @@ const FilterSidebar = ({
                           filters.minPrice > 0 || 
                           filters.maxPrice < 100000 || 
                           filters.location.trim() !== '';
+
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -57,22 +62,46 @@ const FilterSidebar = ({
 
           <div className="space-y-8">
             {/* Category Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-3">Category</label>
-              <div className="relative">
-                <select
-                  value={filters.category}
-                  onChange={(e) => onFilterChange('category', e.target.value)}
-                  className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-slate-300 focus:ring-2 focus:ring-slate-100 outline-none transition-all appearance-none"
-                >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
-              </div>
-            </div>
+            <div className="space-y-8">
+      {/* Category Filter */}
+      <div>
+        <label className="block text-sm font-semibold text-slate-900 mb-3">
+          Category
+        </label>
+        <div className="relative">
+          {/* Dropdown Button */}
+          <button
+            onClick={() => setOpen(!open)}
+            className="w-full flex justify-between items-center p-3 bg-white border border-slate-200 rounded-xl text-left text-sm font-medium text-slate-700 hover:border-slate-300 focus:ring-2 focus:ring-slate-100 focus:outline-none"
+          >
+            <span>{filters.category || "Select Category"}</span>
+            <ChevronDown
+              className={`w-5 h-5 text-slate-400 transition-transform ${
+                open ? "rotate-180" : ""
+              }`}
+            />
+          </button>
 
+          {/* Dropdown Menu */}
+          {open && (
+            <ul className="absolute z-10 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-md">
+              {categories.map((cat) => (
+                <li
+                  key={cat}
+                  onClick={() => {
+                    onFilterChange("category", cat);
+                    setOpen(false);
+                  }}
+                  className="px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer first:rounded-t-xl last:rounded-b-xl"
+                >
+                  {cat}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </div>
             {/* Price Range */}
             <div>
               <label className="block text-sm font-semibold text-slate-900 mb-3">
