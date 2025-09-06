@@ -10,6 +10,8 @@ import ResultsHeader from './components/ResultsHeader';
 import ListingDetailPage from './components/ListingDetailPage';
 import AddListingFlow from './components/AddListingFlow';
 import BookingFlow from './components/BookingFlow';
+import CategoryFilterBar from './components/CategoryFilterBar';
+import useCategoryFilter from './hooks/useCategoryFilter';
 
 // Import new featured listings components
 import FeaturedListings from './components/FeaturedListings';
@@ -29,6 +31,17 @@ const RentalApp = () => {
   // Router hook for navigation
   const { currentView, params, navigate, goBack } = useRouter();
 
+  
+  // Add this BEFORE your useSearchAndFilter hook
+  const {
+    selectedCategories,
+    toggleCategory,
+    clearAllCategories,
+    filteredListings: categoryFilteredListings,
+    getCategoryCounts
+  } = useCategoryFilter(listings);
+  
+  
   // Search and filter hook
   const {
     searchTerm,
@@ -42,7 +55,7 @@ const RentalApp = () => {
     setShowFilters,
     filteredListings,
     resultCount
-  } = useSearchAndFilter(listings);
+  } = useSearchAndFilter(categoryFilteredListings);
 
   // Featured listings hook
   const { featuredItems, loading: featuredLoading } = useFeaturedListings();
@@ -119,6 +132,12 @@ const RentalApp = () => {
     navigate('booking', { listingId: listing.id });
   };
 
+  // Add this function with your other handlers
+  const handleClearAllFilters = () => {
+    clearAllCategories();
+    clearFilters();
+  };
+
   // Handle featured item actions
   const handleFeaturedItemClick = (itemId) => {
     handleItemClick(itemId);
@@ -193,8 +212,9 @@ const RentalApp = () => {
   const showFeaturedSection = !searchTerm && 
                               filters.category === 'All' && 
                               filters.minPrice === 0 && 
-                              filters.maxPrice === 1000 && 
-                              filters.location === '';
+                              filters.maxPrice === 100000 && 
+                              filters.location === '' &&
+                              selectedCategories.length === 0;
 
   // Render main listings page
   return (
@@ -288,14 +308,12 @@ const RentalApp = () => {
         </div>
       </section>
 
-      {/* Featured Listings Section - Only show when no search/filters */}
-      {showFeaturedSection && !featuredLoading && featuredItems.length > 0 && (
-        <FeaturedListings
-          featuredItems={featuredItems}
-          onItemClick={handleFeaturedItemClick}
-          onViewAll={handleViewAllFeatured}
-        />
-      )}
+      {/* Add this right after your Hero Section and before Featured Listings */}
+      <CategoryFilterBar
+        selectedCategories={selectedCategories}
+        onCategoryToggle={toggleCategory}
+        onClearAll={clearAllCategories}
+      />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
@@ -326,6 +344,15 @@ const RentalApp = () => {
                 <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
               </div>
 
+                    {/* Featured Listings Section - Only show when no search/filters */}
+                {showFeaturedSection && !featuredLoading && featuredItems.length > 0 && (
+                  <FeaturedListings
+                    featuredItems={featuredItems}
+                    onItemClick={handleFeaturedItemClick}
+                    onViewAll={handleViewAllFeatured}
+                  />
+                )}
+
               {/* Results Header */}
               <ResultsHeader
                 resultCount={resultCount}
@@ -335,6 +362,9 @@ const RentalApp = () => {
                 sortBy={sortBy}
                 onSortChange={setSortBy}
                 SortDropdown={SortDropdown}
+                selectedCategories={selectedCategories}
+                categoryFilteredListings={categoryFilteredListings || []}
+                handleClearAllFilters={handleClearAllFilters}
               />
 
               {/* Results Grid */}
