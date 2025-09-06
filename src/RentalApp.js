@@ -485,10 +485,9 @@ const RentalApp = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
-              <div className="flex items-center justify-center p-4">
+                <div className="flex items-center justify-center p-4">
                 <img src="/rental.png" alt="Louer Logo" className="w-12 h-12" />
-                </div>                <div>
-
+                </div>
                 <div>
                   <h4 className="text-xl font-bold"> Rentals</h4>
                   <p className="text-sm text-slate-400">Own Less, Access More</p>
