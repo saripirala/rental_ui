@@ -1,4 +1,4 @@
-// RentalApp.js - Updated with Booking Flow Integration
+// RentalApp.js - Updated with Featured Listings
 import React, { useState, useEffect } from 'react';
 import { Plus, Calendar, MapPin, User, IndianRupee, Package, Loader2, Menu, Heart, Star, Globe } from 'lucide-react';
 
@@ -9,15 +9,17 @@ import SortDropdown from './components/SortDropdown';
 import ResultsHeader from './components/ResultsHeader';
 import ListingDetailPage from './components/ListingDetailPage';
 import AddListingFlow from './components/AddListingFlow';
-
-// Import new booking components
 import BookingFlow from './components/BookingFlow';
+
+// Import new featured listings components
+import FeaturedListings from './components/FeaturedListings';
 
 // Import hooks
 import useSearchAndFilter from './hooks/useSearchAndFilter';
 import useRouter from './hooks/useRouter';
 import useListingSubmission from './hooks/useListingSubmission';
 import useBookingManagement from './hooks/useBookingManagement';
+import useFeaturedListings from './hooks/useFeaturedListings';
 
 const RentalApp = () => {
   const [listings, setListings] = useState([]);
@@ -41,6 +43,9 @@ const RentalApp = () => {
     filteredListings,
     resultCount
   } = useSearchAndFilter(listings);
+
+  // Featured listings hook
+  const { featuredItems, loading: featuredLoading } = useFeaturedListings();
 
   // Listing submission hook
   const { submitListing } = useListingSubmission();
@@ -101,27 +106,35 @@ const RentalApp = () => {
 
   const handleBookingComplete = async (bookingResult) => {
     console.log('Booking completed:', bookingResult);
-    // Optionally refresh listings or update UI state
   };
 
-  // Enhanced booking handler for detail page
-//  const handleBooking = (listing, selectedDates) => {
-//    // Check for conflicts first
-//    const conflicts = getBookingConflicts(listing.id, selectedDates[0], selectedDates[selectedDates.length - 1]);
-//    
-//    if (conflicts.length > 0) {
-//      alert('Selected dates conflict with existing bookings. Please choose different dates.');
-//      return;
-//    }
-//
-//    // Navigate to booking flow
-//    navigate('booking', { listingId: listing.id });
-//  };
+  const handleBooking = (listing, selectedDates) => {
+    const conflicts = getBookingConflicts(listing.id, selectedDates[0], selectedDates[selectedDates.length - 1]);
+    
+    if (conflicts.length > 0) {
+      alert('Selected dates conflict with existing bookings. Please choose different dates.');
+      return;
+    }
 
-  // Get current listing for booking flow
+    navigate('booking', { listingId: listing.id });
+  };
+
+  // Handle featured item actions
+  const handleFeaturedItemClick = (itemId) => {
+    handleItemClick(itemId);
+  };
+
+  const handleViewAllFeatured = () => {
+    // You could add a featured filter or create a dedicated page
+    navigate('home');
+    // Optionally set a filter for featured items
+    // handleFilterChange('featured', true);
+  };
+
   const getCurrentListing = () => {
     if (currentView === 'booking' && params.listingId) {
-      return listings.find(listing => listing.id === params.listingId);
+      return listings.find(listing => listing.id === params.listingId) || 
+             featuredItems.find(item => item.id === params.listingId);
     }
     return null;
   };
@@ -164,18 +177,24 @@ const RentalApp = () => {
     );
   }
 
-  // Render detail page with enhanced booking
+  // Render detail page
   if (currentView === 'detail' && params.listingId) {
     return (
       <ListingDetailPage
         listingId={params.listingId}
-        listings={listings}
+        listings={[...listings, ...featuredItems]}
         onBack={goBack}
-        //onBooking={handleBooking}
         onStartBooking={handleStartBooking}
       />
     );
   }
+
+  // Check if we should show featured section (only when no search/filters active)
+  const showFeaturedSection = !searchTerm && 
+                              filters.category === 'All' && 
+                              filters.minPrice === 0 && 
+                              filters.maxPrice === 1000 && 
+                              filters.location === '';
 
   // Render main listings page
   return (
@@ -187,12 +206,11 @@ const RentalApp = () => {
             {/* Logo */}
             <div className="flex items-center">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl flex items-center justify-center">
-                  <Package className="w-6 h-6 text-white" />
-                </div>
-                <div>
+              <div className="flex items-center justify-center p-4">
+                <img src="/rental.png" alt="Louer Logo" className="w-12 h-12" />
+                </div>                <div>
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-                     Rentals
+                    Rentals
                   </h1>
                   <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
                 </div>
@@ -250,7 +268,7 @@ const RentalApp = () => {
           <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 h-full flex items-center">
             <div className="max-w-2xl">
               <h2 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Rent Items
+                Rent items
                 <span className="block bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
                   Fashion Pieces
                 </span>
@@ -269,6 +287,15 @@ const RentalApp = () => {
           </div>
         </div>
       </section>
+
+      {/* Featured Listings Section - Only show when no search/filters */}
+      {showFeaturedSection && !featuredLoading && featuredItems.length > 0 && (
+        <FeaturedListings
+          featuredItems={featuredItems}
+          onItemClick={handleFeaturedItemClick}
+          onViewAll={handleViewAllFeatured}
+        />
+      )}
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
@@ -334,9 +361,6 @@ const RentalApp = () => {
                         >
                           <Heart className="w-4 h-4 text-slate-600" />
                         </button>
-                        <div className={`absolute top-4 left-4 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${getTypeColor(listing.category)}`}>
-                          {listing.category}
-                        </div>
                       </div>
                       
                       <div className="space-y-2">
