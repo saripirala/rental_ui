@@ -486,7 +486,7 @@ const RentalApp = () => {
             <div className="lg:col-span-2">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl flex items-center justify-center">
-                  <Package className="w-6 h-6 text-white" />
+                  <img src="/rental.png" alt="Louer Logo" className="w-12 h-12" />
                 </div>
                 <div>
                   <h4 className="text-xl font-bold"> Rentals</h4>
