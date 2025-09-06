@@ -1,10 +1,10 @@
 // components/FeaturedListings.js
 import React from 'react';
-import { Star, DollarSign, Crown, Shield, Sparkles, ChevronRight, Heart, User, MapPin } from 'lucide-react';
+import { Star, IndianRupee, Crown, Shield, Sparkles, ChevronRight, Heart, User, MapPin } from 'lucide-react';
 
 const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
   const getBadgeInfo = (item) => {
-    if (item.is_premium_featured) {
+    if (item.is_featured) {
       return {
         icon: Crown,
         text: 'Premium',
@@ -82,12 +82,12 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                 className="group cursor-pointer relative"
               >
                 {/* Premium Glow Effect for Premium Items */}
-                {item.is_premium_featured && (
+                {item.is_featured && (
                   <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-2xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
                 )}
                 
                 <div className={`relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ${
-                  item.is_premium_featured ? 'transform group-hover:-translate-y-1' : 'group-hover:-translate-y-0.5'
+                  item.is_featured ? 'transform group-hover:-translate-y-1' : 'group-hover:-translate-y-0.5'
                 }`}>
                   {/* Image Container */}
                   <div className="relative overflow-hidden">
@@ -162,7 +162,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                     {/* Price and Availability */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <DollarSign className="w-5 h-5 text-slate-900" />
+                        <IndianRupee className="w-5 h-5 text-slate-900" />
                         <span className="font-bold text-xl text-slate-900">{item.price_per_day}</span>
                         <span className="text-slate-500 text-sm ml-1">/ day</span>
                       </div>
@@ -181,7 +181,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                     </div>
 
                     {/* Special Offers for Premium Items */}
-                    {item.is_premium_featured && item.discount && (
+                    {item.is_featured && item.discount && (
                       <div className="mt-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3">
                         <div className="flex items-center space-x-2">
                           <Sparkles className="w-4 h-4 text-orange-500" />

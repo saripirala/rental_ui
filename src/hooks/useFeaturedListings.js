@@ -28,7 +28,7 @@ const useFeaturedListings = () => {
             category: item.category,
             
             // Determine featured type based on your backend fields
-            is_premium_featured: item.is_featured && item.price_per_day > 1000, // High-value featured items
+            is_featured: item.is_featured && item.price_per_day > 1000, // High-value featured items
             is_preferred_seller: item.owner?.is_business || item.average_rating > 4.5, // Business accounts or high-rated
             is_sponsored: item.featured_until !== null, // Items with featured_until date are sponsored
             
@@ -55,7 +55,7 @@ const useFeaturedListings = () => {
           .map((item, index) => ({
             ...item,
             users: item.users || item.owner,
-            is_premium_featured: index === 0, // First item is premium
+            is_featured: index === 0, // First item is premium
             is_preferred_seller: index < 2, // First 2 are preferred
             is_sponsored: index >= 4, // Last 2 are sponsored
             rating: (4.5 + Math.random() * 0.5).toFixed(1),
