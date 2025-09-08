@@ -106,11 +106,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                           <span>{badge.text}</span>
                         </div>
                       )}
-                      
-                      <div className={`px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${getTypeColor(item.category)}`}>
-                        {item.category}
-                      </div>
-                    </div>
+                                          </div>
 
                     {/* Favorite Button */}
                     <button
