@@ -113,7 +113,6 @@ const ListingDetailPage = ({ listingId, listings, onBack, onStartBooking }) => {
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-baseline space-x-2">
                   <span className="text-2xl font-bold text-slate-900">₹{listing.price_per_day}</span>
-                  <span className="text-slate-500">per day</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <span className="w-2 h-2 bg-green-500 rounded-full"></span>

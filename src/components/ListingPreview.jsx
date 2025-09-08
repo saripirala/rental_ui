@@ -86,7 +86,6 @@ const ListingPreview = ({ formData, images, onEdit, onSubmit, onCancel }) => {
               <span className="text-3xl font-bold text-slate-900">
               ₹{formData.price_per_day || '0.00'}
               </span>
-              <span className="text-slate-500">per day</span>
             </div>
 
             <div>

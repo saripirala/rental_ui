@@ -248,10 +248,6 @@ const RentalApp = () => {
 
             {/* Navigation */}
             <div className="flex items-center space-x-6">
-              <button className="hidden lg:flex items-center px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
-                <Globe className="w-4 h-4 mr-2" />
-                <span className="text-sm font-medium">EN</span>
-              </button>
               <button 
                 onClick={handleAddListing}
                 className="hidden md:flex items-center px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors text-sm font-medium"
@@ -278,7 +274,7 @@ const RentalApp = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent z-10"></div>
-        <div className="relative h-96 bg-gradient-to-br from-slate-900 via-slate-800 to-rose-900">
+        <div className="relative h-[150px] bg-gradient-to-br from-slate-900 via-slate-800 to-rose-900">
           <div className="absolute inset-0 opacity-10">
             <div className="w-full h-full" style={{
               backgroundImage: `radial-gradient(circle at 25% 25%, white 1px, transparent 1px), radial-gradient(circle at 75% 75%, white 1px, transparent 1px)`,
@@ -287,22 +283,12 @@ const RentalApp = () => {
           </div>
           <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 h-full flex items-center">
             <div className="max-w-2xl">
-              <h2 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-                Rent items
+              <h2 className="text-2xl lg:text-2xl font-bold text-white mb-6 leading-tight">
+                Rent Anything
                 <span className="block bg-gradient-to-r from-rose-400 to-pink-400 bg-clip-text text-transparent">
-                  Fashion Pieces
+                  Fashion . Accessories . Books . Furniture
                 </span>
               </h2>
-              <p className="text-xl text-slate-300 mb-8 leading-relaxed">
-                Discover exclusive designer items, vintage treasures, and premium accessories from curated collections
-              </p>
-              <button
-                onClick={handleAddListing}
-                className="bg-white text-slate-900 px-8 py-4 rounded-full font-semibold hover:bg-slate-100 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center space-x-2"
-              >
-                <Plus size={20} />
-                <span>Start Listing</span>
-              </button>
             </div>
           </div>
         </div>
@@ -316,7 +302,7 @@ const RentalApp = () => {
       />
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
+      <main className="max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-12">
         {!loading && !error && listings.length > 0 && (
           <div className="lg:flex lg:space-x-8">
             {/* Filter Sidebar */}
@@ -334,13 +320,6 @@ const RentalApp = () => {
             <div className="flex-1">
               {/* Search Controls Bar - Mobile */}
               <div className="lg:hidden flex items-center justify-between mb-6">
-                <FilterSidebar
-                  filters={filters}
-                  onFilterChange={handleFilterChange}
-                  onClearFilters={clearFilters}
-                  isOpen={showFilters}
-                  onToggle={() => setShowFilters(!showFilters)}
-                />
                 <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
               </div>
 
@@ -418,7 +397,6 @@ const RentalApp = () => {
                           <div className="flex items-center">
                             <IndianRupee className="w-4 h-4 text-slate-900" />
                             <span className="font-bold text-slate-900">{listing.price_per_day}</span>
-                            <span className="text-slate-500 text-sm ml-1">/ day</span>
                           </div>
                           
                           <div className="flex items-center">

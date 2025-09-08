@@ -45,7 +45,8 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-white via-slate-50 to-rose-50">
+    <section className="pt-8 pb-12 bg-gradient-to-br from-white via-slate-50 to-rose-50">
+
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-12">
@@ -55,7 +56,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900">Featured Items</h2>
+                <h3 className="text-2xl font-bold text-slate-900">Featured Items</h3>
                 <p className="text-slate-600">Handpicked premium pieces from our top sellers</p>
               </div>
             </div>
@@ -135,7 +136,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                   {/* Content */}
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h4 className="font-bold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-2 text-lg leading-tight">
+                    <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
                         {item.title}
                       </h4>
                       <div className="flex items-center space-x-1 flex-shrink-0 ml-3">
@@ -163,8 +164,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <IndianRupee className="w-5 h-5 text-slate-900" />
-                        <span className="font-bold text-xl text-slate-900">{item.price_per_day}</span>
-                        <span className="text-slate-500 text-sm ml-1">/ day</span>
+                        <span className="font-bold text-slate-900">{item.price_per_day}</span>
                       </div>
                       
                       <div className="flex items-center">
@@ -210,7 +210,7 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
         </div>
 
         {/* Feature Benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-16 border-t border-slate-200">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 pt-6 border-t border-slate-200">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Crown className="w-8 h-8 text-white" />
