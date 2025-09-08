@@ -238,7 +238,7 @@ const RentalApp = () => {
             </div>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex items-center mx-8 flex-1">
+            <div className="hidden md:flex items-center md:ml-8">
               <SearchBar 
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
@@ -261,7 +261,7 @@ const RentalApp = () => {
           </div>
 
           {/* Mobile Search Bar */}
-          <div className="md:hidden pb-4">
+          <div className="md:hidden pb-4 flex justify-center w-full">
             <SearchBar 
               searchTerm={searchTerm}
               onSearchChange={setSearchTerm}
