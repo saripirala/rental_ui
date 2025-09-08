@@ -399,7 +399,7 @@ const ListingForm = ({ onSubmit, onCancel, initialData = {} }) => {
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
               <h4 className="font-semibold text-blue-900 mb-2 text-sm">Before you submit</h4>
               <ul className="space-y-1 text-xs text-blue-800">
-                <li>• Your listing will be reviewed within 12 hours</li>
+                <li>• Your listing will be reviewed within 24 hours</li>
                 <li>• Make sure all information is accurate</li>
                 <li>• Photos should be high-quality and well-lit</li>
                 <li>• You can edit details after approval</li>
