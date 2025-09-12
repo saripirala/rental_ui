@@ -30,7 +30,7 @@ const ComingSoonPage = () => {
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
                     Rentals
                   </h1>
-                  <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
+                  <p className="text-xs text-slate-500 font-medium">Own Less, Rent More</p>
                 </div>
               </div>
             </div>
