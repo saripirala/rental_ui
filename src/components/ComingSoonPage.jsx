@@ -5,12 +5,21 @@ const ComingSoonPage = () => {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (email) {
-      setIsSubmitted(true);
-      // Here you can add email collection logic
-      setTimeout(() => setIsSubmitted(false), 3000);
+      try {
+        // Send to Airtable or Google Sheets
+        await fetch('https://script.google.com/macros/s/AKfycbzvLjUT1cAnEVnHItJhswAq8ibsVDWWCnOHQnBDHAbQ548V-oD7cKLi93JxmTh0ozXqbA/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, timestamp: new Date() })
+        });
+        setIsSubmitted(true);
+        setEmail(''); // Clear form
+      } catch (error) {
+        console.error('Failed to save email:', error);
+      }
     }
   };
 
@@ -99,7 +108,7 @@ const ComingSoonPage = () => {
             <h3 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent mb-4">
               What's Coming
             </h3>
-            <p className="text-lg text-slate-600">Experience the future of sharing economy</p>
+            <p className="text-lg text-slate-600">Experience the future of sharing and Saving</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
