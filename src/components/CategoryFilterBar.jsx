@@ -14,50 +14,40 @@ const CategoryFilterBar = ({ selectedCategories, onCategoryToggle, onClearAll })
   const hasActiveFilters = selectedCategories.length > 0;
 
   return (
-    <div className="bg-white border-b border-slate-200 py-6">
+    <div className="bg-white border-b border-slate-100 py-4">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-          {/* Category Filters */}
-          <div className="flex flex-wrap items-center gap-4 mb-4 lg:mb-0">
+        <div className="flex items-center justify-between">
+          {/* Category Filters - Compact horizontal layout */}
+          <div className="flex items-center space-x-8">
             {categories.map((category) => {
               const isSelected = selectedCategories.includes(category.key);
-              const Icon = category.icon;
               
               return (
-                <label key={category.key} className="relative cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={isSelected}
-                    onChange={() => onCategoryToggle(category.key)}
-                    className="sr-only"
-                  />
-                  <div
-                    className={`flex items-center space-x-3 px-6 py-3 rounded-full border-2 transition-all duration-200 ${
+                <button
+                  key={category.key}
+                  onClick={() => onCategoryToggle(category.key)}
+                  className={`relative text-sm font-medium tracking-wide transition-colors duration-200 ${
+                    isSelected
+                      ? 'text-slate-900'
+                      : 'text-slate-500 hover:text-slate-700'
+                  }`}
+                >
+                  {category.label}
+                  {/* Active indicator */}
+                  {isSelected && (
+                    <div className="absolute -bottom-4 left-0 right-0 h-0.5 bg-slate-900 rounded-full"></div>
+                  )}
+                  {/* Count badge - only show on hover or when active */}
+                  <span
+                    className={`ml-2 text-xs px-1.5 py-0.5 rounded-full transition-opacity ${
                       isSelected
-                        ? 'bg-slate-900 border-slate-900 text-white shadow-lg'
-                        : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                        ? 'bg-slate-900 text-white opacity-100'
+                        : 'bg-slate-100 text-slate-500 opacity-0 group-hover:opacity-100'
                     }`}
                   >
-                    {Icon && (
-                      <Icon 
-                        size={18} 
-                        className={isSelected ? 'text-white' : 'text-slate-500'} 
-                      />
-                    )}
-                    <span className="font-semibold text-sm tracking-wide">
-                      {category.label}
-                    </span>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full font-medium ${
-                        isSelected
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {category.count}
-                    </span>
-                  </div>
-                </label>
+                    {category.count}
+                  </span>
+                </button>
               );
             })}
           </div>
@@ -66,30 +56,30 @@ const CategoryFilterBar = ({ selectedCategories, onCategoryToggle, onClearAll })
           {hasActiveFilters && (
             <button
               onClick={onClearAll}
-              className="text-slate-600 hover:text-slate-900 text-sm font-medium underline transition-colors"
+              className="text-xs text-slate-500 hover:text-slate-700 font-small transition-colors"
             >
               Clear All ({selectedCategories.length})
             </button>
           )}
         </div>
 
-        {/* Active Filters Summary */}
+        {/* Active Filters Summary - More minimal */}
         {hasActiveFilters && (
-          <div className="mt-4 pt-4 border-t border-slate-100">
-            <div className="flex items-center space-x-3 text-sm text-slate-600">
-              <span className="font-medium">Active filters:</span>
-              <div className="flex flex-wrap gap-2">
+          <div className="mt-3 pt-3 border-t border-slate-50">
+            <div className="flex items-center space-x-2">
+              <span className="text-xs text-slate-400 font-medium">Filtering by:</span>
+              <div className="flex space-x-2">
                 {selectedCategories.map((categoryKey) => {
                   const category = categories.find(c => c.key === categoryKey);
                   return (
                     <span
                       key={categoryKey}
-                      className="inline-flex items-center space-x-1 bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-xs font-medium"
+                      className="inline-flex items-center text-xs bg-slate-50 text-slate-600 px-2 py-1 rounded-md font-medium"
                     >
-                      <span>{category?.label}</span>
+                      {category?.label}
                       <button
                         onClick={() => onCategoryToggle(categoryKey)}
-                        className="ml-1 hover:text-slate-900 transition-colors"
+                        className="ml-1 text-slate-400 hover:text-slate-600 text-sm leading-none"
                       >
                         ×
                       </button>

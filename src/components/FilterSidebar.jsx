@@ -2,8 +2,6 @@ import React from 'react';
 import { useState } from "react";
 import { Filter, X, ChevronDown } from 'lucide-react';
 
-
-
 const FilterSidebar = ({ 
   filters, 
   onFilterChange, 
@@ -16,154 +14,142 @@ const FilterSidebar = ({
                           filters.minPrice > 0 || 
                           filters.maxPrice < 100000 || 
                           filters.location.trim() !== '';
-
-  const [open, setOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
 
   return (
     <>
-      {/* Mobile Filter Toggle */}
+      {/* Filter Toggle Button - Always visible */}
       <button
         onClick={onToggle}
-        className="lg:hidden flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-full shadow-md hover:shadow-lg transition-shadow"
+        className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-full shadow-md hover:shadow-lg transition-shadow"
       >
         <Filter size={16} />
         <span className="font-medium">Filters</span>
         {hasActiveFilters && (
           <div className="w-2 h-2 bg-rose-500 rounded-full"></div>
         )}
+        <ChevronDown 
+          size={16} 
+          className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
-      {/* Filter Sidebar */}
-      <div className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-80 lg:w-72 bg-white lg:bg-transparent border-r lg:border-r-0 border-slate-200 lg:border-0 shadow-xl lg:shadow-none transform transition-transform duration-300 lg:transform-none
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <div className="p-6 lg:p-0">
-          {/* Mobile Header */}
-          <div className="lg:hidden flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold text-slate-900">Filters</h3>
-            <button onClick={onToggle} className="p-2 hover:bg-slate-100 rounded-lg">
-              <X size={20} />
-            </button>
-          </div>
+      {/* Filter Dropdown Panel */}
+      {isOpen && (
+        <>
+          <div className="absolute left-0 top-full mt-2 w-80 bg-white border border-slate-200 rounded-2xl shadow-xl z-50">
+            <div className="p-6">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-200">
+                <h3 className="text-lg font-semibold text-slate-900">Filters</h3>
+                <button onClick={onToggle} className="p-2 hover:bg-slate-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
 
-          {/* Desktop Header */}
-          <div className="hidden lg:flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-slate-900">Filters</h3>
-            {hasActiveFilters && (
-              <button
-                onClick={onClearFilters}
-                className="text-sm text-slate-500 hover:text-slate-700 underline transition-colors"
-              >
-                Clear all
-              </button>
-            )}
-          </div>
-
-          <div className="space-y-8">
-            {/* Category Filter */}
-            <div className="space-y-8">
-      {/* Category Filter */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-900 mb-3">
-          Category
-        </label>
-        <div className="relative">
-          {/* Dropdown Button */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="w-full flex justify-between items-center p-3 bg-white border border-slate-200 rounded-xl text-left text-sm font-medium text-slate-700 hover:border-slate-300 focus:ring-2 focus:ring-slate-100 focus:outline-none"
-          >
-            <span>{filters.category || "Select Category"}</span>
-            <ChevronDown
-              className={`w-5 h-5 text-slate-400 transition-transform ${
-                open ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          {/* Dropdown Menu */}
-          {open && (
-            <ul className="absolute z-10 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-md">
-              {categories.map((cat) => (
-                <li
-                  key={cat}
-                  onClick={() => {
-                    onFilterChange("category", cat);
-                    setOpen(false);
-                  }}
-                  className="px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer first:rounded-t-xl last:rounded-b-xl"
-                >
-                  {cat}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
-            {/* Price Range */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-3">
-                Price Range (₹{filters.minPrice} - ₹{filters.maxPrice})
-              </label>
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Category Filter */}
                 <div>
-                  <label className="block text-xs text-slate-600 mb-2">Min Price</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-3">
+                    Category
+                  </label>
+                  <div className="relative">
+                    {/* Dropdown Button */}
+                    <button
+                      onClick={() => setCategoryOpen(!categoryOpen)}
+                      className="w-full flex justify-between items-center p-3 bg-white border border-slate-200 rounded-xl text-left text-sm font-medium text-slate-700 hover:border-slate-300 focus:ring-2 focus:ring-slate-100 focus:outline-none"
+                    >
+                      <span>{filters.category || "Select Category"}</span>
+                      <ChevronDown
+                        className={`w-5 h-5 text-slate-400 transition-transform ${
+                          categoryOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {/* Dropdown Menu */}
+                    {categoryOpen && (
+                      <ul className="absolute z-10 mt-2 w-full bg-white border border-slate-200 rounded-xl shadow-md max-h-40 overflow-y-auto">
+                        {categories.map((cat) => (
+                          <li
+                            key={cat}
+                            onClick={() => {
+                              onFilterChange("category", cat);
+                              setCategoryOpen(false);
+                            }}
+                            className="px-4 py-2 text-sm text-slate-700 hover:bg-slate-100 cursor-pointer first:rounded-t-xl last:rounded-b-xl"
+                          >
+                            {cat}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-3">
+                    Price Range (₹{filters.minPrice} - ₹{filters.maxPrice})
+                  </label>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs text-slate-600 mb-2">Min Price</label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="500"
+                        value={filters.minPrice}
+                        onChange={(e) => onFilterChange('minPrice', parseInt(e.target.value))}
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-600 mb-2">Max Price</label>
+                      <input
+                        type="range"
+                        min="50"
+                        max="100000"
+                        value={filters.maxPrice}
+                        onChange={(e) => onFilterChange('maxPrice', parseInt(e.target.value))}
+                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Location Filter */}
+                <div>
+                  <label className="block text-sm font-semibold text-slate-900 mb-3">Location</label>
                   <input
-                    type="range"
-                    min="0"
-                    max="500"
-                    value={filters.minPrice}
-                    onChange={(e) => onFilterChange('minPrice', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                    type="text"
+                    value={filters.location}
+                    onChange={(e) => onFilterChange('location', e.target.value)}
+                    placeholder="Enter city or area..."
+                    className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-slate-300 focus:ring-2 focus:ring-slate-100 outline-none transition-all"
                   />
                 </div>
-                <div>
-                  <label className="block text-xs text-slate-600 mb-2">Max Price</label>
-                  <input
-                    type="range"
-                    min="50"
-                    max="1000"
-                    value={filters.maxPrice}
-                    onChange={(e) => onFilterChange('maxPrice', parseInt(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
-                  />
-                </div>
+
+                {/* Clear Filters Button */}
+                {hasActiveFilters && (
+                  <div className="pt-4 border-t border-slate-200">
+                    <button
+                      onClick={onClearFilters}
+                      className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors"
+                    >
+                      Clear All Filters
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
-
-            {/* Location Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-3">Location</label>
-              <input
-                type="text"
-                value={filters.location}
-                onChange={(e) => onFilterChange('location', e.target.value)}
-                placeholder="Enter city or area..."
-                className="w-full p-3 bg-white border border-slate-200 rounded-xl focus:border-slate-300 focus:ring-2 focus:ring-slate-100 outline-none transition-all"
-              />
-            </div>
-
-            {/* Mobile Clear Filters */}
-            <div className="lg:hidden pt-4">
-              <button
-                onClick={onClearFilters}
-                className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-medium transition-colors"
-              >
-                Clear All Filters
-              </button>
-            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div 
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
-          onClick={onToggle}
-        />
+          {/* Overlay to close dropdown when clicking outside */}
+          <div 
+            className="fixed inset-0 z-40"
+            onClick={onToggle}
+          />
+        </>
       )}
     </>
   );

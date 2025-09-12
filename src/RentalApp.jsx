@@ -15,6 +15,7 @@ import useCategoryFilter from './hooks/useCategoryFilter';
 
 // Import new featured listings components
 import FeaturedListings from './components/FeaturedListings';
+import ActiveFiltersBar from './components/ActiveFiltersBar';
 
 // Import hooks
 import useSearchAndFilter from './hooks/useSearchAndFilter';
@@ -294,155 +295,160 @@ const RentalApp = () => {
         </div>
       </section>
 
-      {/* Add this right after your Hero Section and before Featured Listings */}
+      {/* Category Filter Bar */}
       <CategoryFilterBar
         selectedCategories={selectedCategories}
         onCategoryToggle={toggleCategory}
         onClearAll={clearAllCategories}
       />
 
+      {/* Active Filters Bar - Add this new component */}
+      <ActiveFiltersBar
+        filters={filters}
+        selectedCategories={selectedCategories}
+        onFilterChange={handleFilterChange}
+        onCategoryToggle={toggleCategory}
+        onClearAll={handleClearAllFilters}
+      />
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-6 lg:px-8 pt-8 pb-12">
         {!loading && !error && listings.length > 0 && (
-          <div className="lg:flex lg:space-x-8">
-            {/* Filter Sidebar */}
-            <div className="lg:w-72 mb-8 lg:mb-0">
-              <FilterSidebar
-                filters={filters}
-                onFilterChange={handleFilterChange}
-                onClearFilters={clearFilters}
-                isOpen={showFilters}
-                onToggle={() => setShowFilters(!showFilters)}
-              />
+          <div>
+            {/* Search Controls Bar - Now includes both mobile and desktop */}
+            <div className="flex items-center justify-between mb-6">
+              {/* Left side - Filter dropdown */}
+              <div className="relative">
+                <FilterSidebar
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                  onClearFilters={clearFilters}
+                  isOpen={showFilters}
+                  onToggle={() => setShowFilters(!showFilters)}
+                />
+              </div>
+              
+              {/* Right side - Sort dropdown */}
+              <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
             </div>
 
-            {/* Main Content Area */}
-            <div className="flex-1">
-              {/* Search Controls Bar - Mobile */}
-              <div className="lg:hidden flex items-center justify-between mb-6">
-                <SortDropdown sortBy={sortBy} onSortChange={setSortBy} />
-              </div>
-
-                    {/* Featured Listings Section - Only show when no search/filters */}
-                {showFeaturedSection && !featuredLoading && featuredItems.length > 0 && (
-                  <FeaturedListings
-                    featuredItems={featuredItems}
-                    onItemClick={handleFeaturedItemClick}
-                    onViewAll={handleViewAllFeatured}
-                  />
-                )}
-
-              {/* Results Header */}
-              <ResultsHeader
-                resultCount={resultCount}
-                totalCount={listings.length}
-                searchTerm={searchTerm}
-                filters={filters}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                SortDropdown={SortDropdown}
-                selectedCategories={selectedCategories}
-                categoryFilteredListings={categoryFilteredListings || []}
-                handleClearAllFilters={handleClearAllFilters}
+            {/* Featured Listings Section - Only show when no search/filters */}
+            {showFeaturedSection && !featuredLoading && featuredItems.length > 0 && (
+              <FeaturedListings
+                featuredItems={featuredItems}
+                onItemClick={handleFeaturedItemClick}
+                onViewAll={handleViewAllFeatured}
               />
+            )}
 
-              {/* Results Grid */}
-              {filteredListings.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredListings.map((listing) => (
-                    <div 
-                      key={listing.id} 
-                      className="group cursor-pointer"
-                      onClick={() => handleItemClick(listing.id)}
-                    >
-                      <div className="relative overflow-hidden rounded-2xl mb-4">
-                        <img
-                          src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
-                          alt={listing.title}
-                          className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            console.log('Toggle favorite');
-                          }}
-                          className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <Heart className="w-4 h-4 text-slate-600" />
-                        </button>
+            {/* Results Header */}
+            <ResultsHeader
+              resultCount={resultCount}
+              totalCount={listings.length}
+              searchTerm={searchTerm}
+              filters={filters}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              SortDropdown={SortDropdown}
+              selectedCategories={selectedCategories}
+              categoryFilteredListings={categoryFilteredListings || []}
+              handleClearAllFilters={handleClearAllFilters}
+            />
+
+            {/* Results Grid */}
+            {filteredListings.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {filteredListings.map((listing) => (
+                  <div 
+                    key={listing.id} 
+                    className="group cursor-pointer"
+                    onClick={() => handleItemClick(listing.id)}
+                  >
+                    <div className="relative overflow-hidden rounded-2xl mb-4">
+                      <img
+                        src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
+                        alt={listing.title}
+                        className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          console.log('Toggle favorite');
+                        }}
+                        className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Heart className="w-4 h-4 text-slate-600" />
+                      </button>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex items-start justify-between">
+                        <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
+                          {listing.title}
+                        </h4>
+                        <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
+                          <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
+                          <span className="text-sm text-slate-600 font-medium">4.9</span>
+                        </div>
                       </div>
                       
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between">
-                          <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
-                            {listing.title}
-                          </h4>
-                          <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
-                            <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
-                            <span className="text-sm text-slate-600 font-medium">4.9</span>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center text-sm text-slate-500">
-                          <User className="w-4 h-4 mr-1" />
-                          <span>{listing.users?.full_name || "Premium Host"}</span>
-                        </div>
-                        
-                        <div className="flex items-center text-sm text-slate-500">
-                          <MapPin className="w-4 h-4 mr-1" />
-                          <span>{listing.location || "Location available"}</span>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2">
-                          <div className="flex items-center">
-                            <IndianRupee className="w-4 h-4 text-slate-900" />
-                            <span className="font-bold text-slate-900">{listing.price_per_day}</span>
-                          </div>
-                          
-                          <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-1" />
-                            {listing.availability ? (
-                              <span className="text-emerald-600 font-medium text-sm">Available</span>
-                            ) : (
-                              <span className="text-amber-600 font-medium text-sm">Booked</span>
-                            )}
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (listing.availability) {
-                              handleStartBooking(listing);
-                            }
-                          }}
-                          disabled={!listing.availability}
-                          className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
-                            listing.availability
-                              ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                              : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          }`}
-                        >
-                          {listing.availability ? 'Book Now' : 'Currently Unavailable'}
-                        </button>
+                      <div className="flex items-center text-sm text-slate-500">
+                        <User className="w-4 h-4 mr-1" />
+                        <span>{listing.users?.full_name || "Premium Host"}</span>
                       </div>
+                      
+                      <div className="flex items-center text-sm text-slate-500">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        <span>{listing.location || "Location available"}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-2">
+                        <div className="flex items-center">
+                          <IndianRupee className="w-4 h-4 text-slate-900" />
+                          <span className="font-bold text-slate-900">{listing.price_per_day}</span>
+                        </div>
+                        
+                        <div className="flex items-center">
+                          <Calendar className="w-4 h-4 mr-1" />
+                          {listing.availability ? (
+                            <span className="text-emerald-600 font-medium text-sm">Available</span>
+                          ) : (
+                            <span className="text-amber-600 font-medium text-sm">Booked</span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (listing.availability) {
+                            handleStartBooking(listing);
+                          }
+                        }}
+                        disabled={!listing.availability}
+                        className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
+                          listing.availability
+                            ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                        }`}
+                      >
+                        {listing.availability ? 'Book Now' : 'Currently Unavailable'}
+                      </button>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-20">
-                  <Package size={48} className="mx-auto text-slate-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-slate-900 mb-2">No items match your search</h3>
-                  <p className="text-slate-500 mb-6">Try adjusting your filters or search terms</p>
-                  <button
-                    onClick={clearFilters}
-                    className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
-                  >
-                    Clear Filters
-                  </button>
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-20">
+                <Package size={48} className="mx-auto text-slate-400 mb-4" />
+                <h3 className="text-xl font-semibold text-slate-900 mb-2">No items match your search</h3>
+                <p className="text-slate-500 mb-6">Try adjusting your filters or search terms</p>
+                <button
+                  onClick={clearFilters}
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
           </div>
         )}
 

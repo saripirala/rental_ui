@@ -46,7 +46,7 @@ const ResultsHeader = ({
         {(selectedCategories.length > 0 || searchTerm || filters.category !== 'All' || filters.minPrice > 0 || filters.maxPrice < 1000 || filters.location) && (
           <button
             onClick={handleClearAllFilters}
-            className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+            className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-small transition-colors"
           >
             Clear All Filters
           </button>
