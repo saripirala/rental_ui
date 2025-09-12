@@ -13,9 +13,7 @@ const DomainRouter = () => {
     const isProductionDomain = 
       currentHostname === 'www.rentalstore.in' || 
       currentHostname === 'rentalstore.in';
-    
-    console.log('Current hostname:', currentHostname);
-    console.log('Show coming soon:', isProductionDomain);
+
     
     setShowComingSoon(isProductionDomain);
     setLoading(false);

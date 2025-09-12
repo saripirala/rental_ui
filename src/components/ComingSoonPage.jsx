@@ -10,8 +10,9 @@ const ComingSoonPage = () => {
     if (email) {
       try {
         // Send to Airtable or Google Sheets
-        await fetch('https://script.google.com/macros/s/AKfycbzvLjUT1cAnEVnHItJhswAq8ibsVDWWCnOHQnBDHAbQ548V-oD7cKLi93JxmTh0ozXqbA/exec', {
+        await fetch('https://script.google.com/macros/s/AKfycbxMyQo6fyheFQfkmYyr5uZoLeF8mQ-7rMOO2PMj4cJiGPHJjqUHZmRXCdKO4rjcoXfWJA/exec', {
           method: 'POST',
+          mode: "no-cors",
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, timestamp: new Date() })
         });
