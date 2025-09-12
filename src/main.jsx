@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import RentalApp from "./RentalApp";   // ✅ your main app
+import DomainRouter from "./DomainRouter";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RentalApp />
+    <DomainRouter />
   </React.StrictMode>
 );
