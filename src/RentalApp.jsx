@@ -233,7 +233,7 @@ const RentalApp = () => {
                   <h1 className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
                     Rentals
                   </h1>
-                  <p className="text-xs text-slate-500 font-medium">Own Less, Access More</p>
+                  <p className="text-xs text-slate-500 font-medium">Own Less, Rent More</p>
                 </div>
               </div>
             </div>
@@ -249,12 +249,28 @@ const RentalApp = () => {
 
             {/* Navigation */}
             <div className="flex items-center space-x-6">
-              <button 
-                onClick={handleAddListing}
-                className="hidden md:flex items-center px-4 py-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors text-sm font-medium"
-              >
-                List your items
-              </button>
+            <button 
+              onClick={handleAddListing}
+              className="group relative overflow-hidden px-6 py-2.5 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg text-sm font-semibold shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+              {/* Subtle hover overlay */}
+              <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+              
+              {/* Content */}
+              <div className="relative flex items-center space-x-2">
+                <svg 
+                  className="w-3.5 h-3.5 group-hover:scale-110 transition-transform duration-200" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                <span>List Your Items</span>
+              </div>
+            </button>
+
+
               <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center">
                 <Menu className="w-5 h-5 text-white" />
               </div>
@@ -355,100 +371,118 @@ const RentalApp = () => {
               handleClearAllFilters={handleClearAllFilters}
             />
 
-            {/* Results Grid */}
-            {filteredListings.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {filteredListings.map((listing) => (
-                  <div 
-                    key={listing.id} 
-                    className="group cursor-pointer"
-                    onClick={() => handleItemClick(listing.id)}
-                  >
-                    <div className="relative overflow-hidden rounded-2xl mb-4">
-                      <img
-                        src={listing.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
-                        alt={listing.title}
-                        className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          console.log('Toggle favorite');
-                        }}
-                        className="absolute top-4 right-4 w-8 h-8 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Heart className="w-4 h-4 text-slate-600" />
-                      </button>
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <div className="flex items-start justify-between">
-                        <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
-                          {listing.title}
-                        </h4>
-                        <div className="flex items-center space-x-1 flex-shrink-0 ml-2">
-                          <Star className="w-4 h-4 fill-slate-400 text-slate-400" />
-                          <span className="text-sm text-slate-600 font-medium">4.9</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center text-sm text-slate-500">
-                        <User className="w-4 h-4 mr-1" />
-                        <span>{listing.users?.full_name || "Premium Host"}</span>
-                      </div>
-                      
-                      <div className="flex items-center text-sm text-slate-500">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        <span>{listing.location || "Location available"}</span>
-                      </div>
-                      <div className="flex items-center justify-between pt-2">
-                        <div className="flex items-center">
-                          <IndianRupee className="w-4 h-4 text-slate-900" />
-                          <span className="font-bold text-slate-900">{listing.price_per_day}</span>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {listing.availability ? (
-                            <span className="text-emerald-600 font-medium text-sm">Available</span>
-                          ) : (
-                            <span className="text-amber-600 font-medium text-sm">Booked</span>
-                          )}
-                        </div>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (listing.availability) {
-                            handleStartBooking(listing);
-                          }
-                        }}
-                        disabled={!listing.availability}
-                        className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-200 mt-4 ${
-                          listing.availability
-                            ? 'bg-slate-900 hover:bg-slate-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                            : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                        }`}
-                      >
-                        {listing.availability ? 'Book Now' : 'Currently Unavailable'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
+    {/* Results Grid */}
+    {filteredListings.length > 0 ? (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {filteredListings.map((listing) => (
+          <div 
+            key={listing.id} 
+            className="group cursor-pointer bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col"
+            onClick={() => handleItemClick(listing.id)}
+          >
+            {/* Image Container */}
+            <div className="relative aspect-square overflow-hidden bg-gray-100">
+              <img
+                src={listing.images?.[0] || "https://via.placeholder.com/400x400?text=No+Image"}
+                alt={listing.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  console.log('Toggle favorite');
+                }}
+                className="absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all opacity-0 group-hover:opacity-100 shadow-sm"
+              >
+                <Heart className="w-3.5 h-3.5 text-gray-600" />
+              </button>
+              
+              {/* Rating Badge */}
+              <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center space-x-0.5 shadow-sm">
+                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs font-semibold text-gray-800">4.9</span>
               </div>
-            ) : (
-              <div className="text-center py-20">
-                <Package size={48} className="mx-auto text-slate-400 mb-4" />
-                <h3 className="text-xl font-semibold text-slate-900 mb-2">No items match your search</h3>
-                <p className="text-slate-500 mb-6">Try adjusting your filters or search terms</p>
+            </div>
+            
+            {/* Content - Fixed Height */}
+            <div className="p-3 flex flex-col flex-1">
+              {/* Brand/Host Name */}
+              <div className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">
+                {listing.users?.full_name || "Premium Host"}
+              </div>
+              
+              {/* Title - Fixed height container */}
+              <div className="h-10 mb-2">
+                <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight">
+                  {listing.title}
+                </h4>
+              </div>
+              
+              {/* Location */}
+              <div className="flex items-center text-xs text-gray-500 mb-2">
+                <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                <span className="truncate">{listing.location || "Location available"}</span>
+              </div>
+              
+              {/* Spacer to push bottom content down */}
+              <div className="flex-1"></div>
+              
+              {/* Bottom Section - Price and Status */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-baseline space-x-1">
+                    <span className="text-xs text-gray-500">Rs.</span>
+                    <span className="text-lg font-bold text-gray-900">{listing.price_per_day}</span>
+                  </div>
+                  
+                  {/* Availability Status */}
+                  <div className="flex items-center">
+                    <div className={`w-2 h-2 rounded-full mr-1.5 ${
+                      listing.availability ? 'bg-emerald-500' : 'bg-red-500'
+                    }`} />
+                    <span className={`text-xs font-semibold ${
+                      listing.availability ? 'text-emerald-600' : 'text-red-600'
+                    }`}>
+                      {listing.availability ? 'Available' : 'Booked'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Book Now Button */}
                 <button
-                  onClick={clearFilters}
-                  className="bg-slate-900 hover:bg-slate-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (listing.availability) {
+                      handleStartBooking(listing);
+                    }
+                  }}
+                  disabled={!listing.availability}
+                  className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    listing.availability
+                      ? 'bg-gray-900 hover:bg-gray-800 text-white shadow-sm hover:shadow-md transform hover:-translate-y-0.5'
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
                 >
-                  Clear Filters
+                  {listing.availability ? 'Book Now' : 'Unavailable'}
                 </button>
               </div>
-            )}
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-20">
+        <Package size={48} className="mx-auto text-gray-400 mb-4" />
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">No items match your search</h3>
+        <p className="text-gray-500 mb-6">Try adjusting your filters or search terms</p>
+        <button
+          onClick={clearFilters}
+          className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-medium transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
+    )}
           </div>
         )}
 
@@ -504,7 +538,7 @@ const RentalApp = () => {
                 </div>
                 <div>
                   <h4 className="text-xl font-bold"> Rentals</h4>
-                  <p className="text-sm text-slate-400">Own Less, Access More</p>
+                  <p className="text-sm text-slate-400">Own Less, Rent More</p>
                 </div>
               </div>
               <p className="text-slate-300 leading-relaxed max-w-md">

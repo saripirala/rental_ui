@@ -28,165 +28,160 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
     return null;
   };
 
-  const getTypeColor = (type) => {
-    switch(type?.toLowerCase()) {
-      case 'costume': return 'bg-rose-50 text-rose-700 border-rose-200';
-      case 'dress': return 'bg-pink-50 text-pink-700 border-pink-200';
-      case 'book': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
-      case 'accessory': return 'bg-purple-50 text-purple-700 border-purple-200';
-      case 'bag': return 'bg-amber-50 text-amber-700 border-amber-200';
-      case 'jewelry': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-      default: return 'bg-slate-50 text-slate-700 border-slate-200';
-    }
-  };
-
   if (!featuredItems || featuredItems.length === 0) {
     return null;
   }
 
   return (
-    <section className="pt-8 pb-12 bg-gradient-to-br from-white via-slate-50 to-rose-50">
-
+    <section className="py-12 bg-gradient-to-br from-white via-slate-50 to-rose-50">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="w-10 h-10 bg-gradient-to-r from-rose-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-slate-900">Featured Items</h3>
-                <p className="text-slate-600">Handpicked premium pieces from our top sellers</p>
+                <h3 className="text-xl font-bold text-slate-900">Featured Items</h3>
+                <p className="text-sm text-slate-600">Handpicked premium pieces</p>
               </div>
             </div>
           </div>
           
           <button
             onClick={onViewAll}
-            className="hidden lg:flex items-center space-x-2 px-6 py-3 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors font-medium text-slate-700"
+            className="hidden lg:flex items-center space-x-2 px-4 py-2 border border-slate-200 rounded-full hover:bg-slate-50 transition-colors text-sm font-medium text-slate-700"
           >
             <span>View All</span>
-            <ChevronRight size={16} />
+            <ChevronRight size={14} />
           </button>
         </div>
 
         {/* Featured Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-8">
-          {featuredItems.slice(0, 8).map((item) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mb-8">
+          {featuredItems.slice(0, 10).map((item) => {
             const badge = getBadgeInfo(item);
             
             return (
               <div
                 key={item.id}
                 onClick={() => onItemClick(item.id)}
-                className="group cursor-pointer relative"
+                className="group cursor-pointer bg-white rounded-lg overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col"
               >
-                {/* Premium Glow Effect for Premium Items */}
-                {item.is_featured && (
-                  <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-2xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
-                )}
-                
-                <div className={`relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 ${
-                  item.is_featured ? 'transform group-hover:-translate-y-1' : 'group-hover:-translate-y-0.5'
-                }`}>
-                  {/* Image Container */}
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={item.images?.[0] || "https://via.placeholder.com/400x300?text=No+Image"}
-                      alt={item.title}
-                      className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    
-                    {/* Overlay Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col space-y-2">
-                      {badge && (
-                        <div className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm flex items-center space-x-1 ${badge.className}`}>
-                          <badge.icon size={12} />
-                          <span>{badge.text}</span>
-                        </div>
-                      )}
-                                          </div>
-
-                    {/* Favorite Button */}
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        console.log('Toggle favorite');
-                      }}
-                      className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                    >
-                      <Heart className="w-4 h-4 text-slate-600" />
-                    </button>
-
-                    {/* Quick View Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="absolute bottom-4 left-4 right-4">
-                        <button className="w-full py-2 px-4 bg-white/90 backdrop-blur-sm text-slate-900 rounded-lg font-medium text-sm hover:bg-white transition-colors">
-                          Quick View
-                        </button>
-                      </div>
+                {/* Image Container */}
+                <div className="relative aspect-square overflow-hidden bg-gray-100">
+                  <img
+                    src={item.images?.[0] || "https://via.placeholder.com/400x400?text=No+Image"}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  
+                  {/* Badge */}
+                  {badge && (
+                    <div className={`absolute top-2 left-2 px-1.5 py-0.5 rounded text-xs font-bold flex items-center space-x-0.5 ${badge.className} shadow-sm`}>
+                      <badge.icon size={10} />
+                      <span>{badge.text}</span>
                     </div>
+                  )}
+
+                  {/* Favorite Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      console.log('Toggle favorite');
+                    }}
+                    className="absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-all opacity-0 group-hover:opacity-100 shadow-sm"
+                  >
+                    <Heart className="w-3.5 h-3.5 text-gray-600" />
+                  </button>
+                  
+                  {/* Rating Badge */}
+                  {!badge && (
+                    <div className="absolute top-2 left-2 bg-white/95 backdrop-blur-sm rounded px-1.5 py-0.5 flex items-center space-x-0.5 shadow-sm">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                      <span className="text-xs font-semibold text-gray-800">{item.rating || '4.9'}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Content - Fixed Height */}
+                <div className="p-3 flex flex-col flex-1">
+                  {/* Brand/Host Name */}
+                  <div className="flex items-center text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">
+                    <span className="truncate">{item.users?.full_name || "Premium Host"}</span>
+                    {item.is_preferred_seller && (
+                      <Shield className="w-3 h-3 ml-1 text-blue-500 flex-shrink-0" />
+                    )}
                   </div>
                   
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                    <h4 className="font-semibold text-slate-900 group-hover:text-slate-600 transition-colors line-clamp-1">
-                        {item.title}
-                      </h4>
-                      <div className="flex items-center space-x-1 flex-shrink-0 ml-3">
-                        <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                        <span className="text-sm font-bold text-slate-900">{item.rating || '4.9'}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-slate-600">
-                        <User className="w-4 h-4 mr-2" />
-                        <span className="font-medium">{item.users?.full_name || "Premium Host"}</span>
-                        {item.is_preferred_seller && (
-                          <Shield className="w-3 h-3 ml-1 text-blue-500" />
-                        )}
-                      </div>
-                      
-                      <div className="flex items-center text-sm text-slate-500">
-                        <MapPin className="w-4 h-4 mr-2" />
-                        <span>{item.location || "Premium Location"}</span>
-                      </div>
-                    </div>
-
-                    {/* Price and Availability */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <IndianRupee className="w-5 h-5 text-slate-900" />
-                        <span className="font-bold text-slate-900">{item.price_per_day}</span>
-                      </div>
-                      
-                      <div className="flex items-center">
-                        {item.availability ? (
-                          <span className="text-emerald-600 font-semibold text-sm bg-emerald-50 px-3 py-1 rounded-full">
-                            Available
-                          </span>
-                        ) : (
-                          <span className="text-amber-600 font-semibold text-sm bg-amber-50 px-3 py-1 rounded-full">
-                            Booked
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Special Offers for Premium Items */}
+                  {/* Title - Fixed height container */}
+                  <div className="h-10 mb-2">
+                    <h4 className="text-sm font-semibold text-gray-900 line-clamp-2 leading-tight">
+                      {item.title}
+                    </h4>
+                  </div>
+                  
+                  {/* Location */}
+                  <div className="flex items-center text-xs text-gray-500 mb-2">
+                    <MapPin className="w-3 h-3 mr-1 flex-shrink-0" />
+                    <span className="truncate">{item.location || "Premium Location"}</span>
+                  </div>
+                  
+                  {/* Spacer to push bottom content down */}
+                  <div className="flex-1"></div>
+                  
+                  {/* Bottom Section */}
+                  <div className="space-y-2">
+                    {/* Special Offer for Featured Items */}
                     {item.is_featured && item.discount && (
-                      <div className="mt-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-3">
-                        <div className="flex items-center space-x-2">
-                          <Sparkles className="w-4 h-4 text-orange-500" />
-                          <span className="text-sm font-semibold text-orange-700">
-                            {item.discount}% off for 7+ days
+                      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-md p-2 mb-2">
+                        <div className="flex items-center space-x-1">
+                          <Sparkles className="w-3 h-3 text-orange-500" />
+                          <span className="text-xs font-semibold text-orange-700">
+                            {item.discount}% off 7+ days
                           </span>
                         </div>
                       </div>
                     )}
+                    
+                    {/* Price and Status */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-baseline space-x-1">
+                        <span className="text-xs text-gray-500">Rs.</span>
+                        <span className="text-lg font-bold text-gray-900">{item.price_per_day}</span>
+                      </div>
+                      
+                      {/* Availability Status */}
+                      <div className="flex items-center">
+                        <div className={`w-2 h-2 rounded-full mr-1.5 ${
+                          item.availability ? 'bg-emerald-500' : 'bg-red-500'
+                        }`} />
+                        <span className={`text-xs font-semibold ${
+                          item.availability ? 'text-emerald-600' : 'text-red-600'
+                        }`}>
+                          {item.availability ? 'Available' : 'Booked'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Book Now Button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (item.availability) {
+                          console.log('Start booking', item);
+                        }
+                      }}
+                      disabled={!item.availability}
+                      className={`w-full py-2.5 px-4 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                        item.availability
+                          ? 'bg-gray-900 hover:bg-gray-800 text-white shadow-sm hover:shadow-md transform hover:-translate-y-0.5'
+                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {item.availability ? 'Book Now' : 'Unavailable'}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -198,38 +193,11 @@ const FeaturedListings = ({ featuredItems, onItemClick, onViewAll }) => {
         <div className="lg:hidden text-center">
           <button
             onClick={onViewAll}
-            className="inline-flex items-center space-x-2 px-8 py-3 bg-slate-900 text-white rounded-full font-semibold hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
+            className="inline-flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-full font-semibold hover:bg-slate-800 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
           >
-            <span>View All Featured Items</span>
+            <span>View All Featured</span>
             <ChevronRight size={16} />
           </button>
-        </div>
-
-        {/* Feature Benefits */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 pt-6 border-t border-slate-200">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Crown className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Premium Quality</h3>
-            <p className="text-slate-600">Carefully curated luxury items from verified premium sellers</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Verified Sellers</h3>
-            <p className="text-slate-600">All featured sellers are identity-verified with proven track records</p>
-          </div>
-          
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Special Offers</h3>
-            <p className="text-slate-600">Exclusive discounts and deals available only on featured items</p>
-          </div>
         </div>
       </div>
     </section>

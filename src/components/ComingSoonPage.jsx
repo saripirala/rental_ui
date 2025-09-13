@@ -75,7 +75,7 @@ const ComingSoonPage = () => {
               </h2>
               <p className="text-xl text-slate-200 mb-8 leading-relaxed max-w-2xl mx-auto">
                 We're building the ultimate rental marketplace for fashion, accessories, books, furniture and more. 
-                Get ready to own less and access more!
+                Get ready to own less and Rent More!
               </p>
 
               {/* Email Signup */}
